@@ -28,7 +28,7 @@ require_once('../../config.php');
 require_once('../../mod/booking/locallib.php');
 
 $courseid     = required_param('courseid', PARAM_INT);
-$sort         = optional_param('sort', null, PARAM_INT);
+$sort         = optional_param('sort', null, PARAM_ALPHANUM);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidaccess');
