@@ -30,7 +30,7 @@ require_once('../../mod/booking/locallib.php');
 $courseid     = required_param('courseid', PARAM_INT);
 $sort         = optional_param('sort', null, PARAM_ALPHANUM);
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = get_course($courseid)) {
     print_error('invalidaccess');
 }
 
@@ -42,6 +42,8 @@ $PAGE->set_url($url);
 $context = CONTEXT_SYSTEM::instance();
 $PAGE->set_title(format_string(get_string('booking:viewallbookings','block_booking')));
 $PAGE->set_heading(get_string('title','block_booking'));
+$PAGE->navbar->add(get_string('booking:viewallbookings', 'block_booking'),$url);
+
 
 echo $OUTPUT->header();
 echo html_writer::tag('h1', get_string('title','block_booking'));
