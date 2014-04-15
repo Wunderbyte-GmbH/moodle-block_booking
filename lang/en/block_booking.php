@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'Bookings overview';
-$string['title'] = 'Overview of bookings';
+$string['title'] = 'Bookings overview';
 $string['sortbycourse'] = 'Sort by course';
 $string['sortbyuser'] = 'Sort by user';
 

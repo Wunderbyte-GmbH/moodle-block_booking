@@ -44,18 +44,8 @@ $PAGE->set_title(format_string(get_string('booking:viewallbookings','block_booki
 $PAGE->set_heading(get_string('title','block_booking'));
 $PAGE->navbar->add(get_string('booking:viewallbookings', 'block_booking'),$url);
 
-
 echo $OUTPUT->header();
 echo html_writer::tag('h1', get_string('title','block_booking'));
-$sortbyuser = new moodle_url('/blocks/booking/booking.php', array('courseid'=>$courseid, 'sort' => 'user'));
-$onlymybookings = new moodle_url('/blocks/booking/booking.php', array('courseid'=>$courseid, 'sort' => 'my'));
-
-echo html_writer::link($sortbyuser, get_string('sortbyuser', 'block_booking'));
-echo html_writer::span("  //  ");
-echo html_writer::link($url,get_string('sortbycourse', 'block_booking'));
-echo html_writer::span("  //  ");
-echo html_writer::link($onlymybookings,get_string('showmybookings', 'booking'));
 $allbookings = new booking_all_bookings();
-$allbookings->get_all_bookings_visible();
 echo $allbookings->display($sort);
 echo $OUTPUT->footer();
