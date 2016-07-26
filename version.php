@@ -26,6 +26,7 @@
 
 $plugin->version = 2014041500;// The current plugin version (Date: YYYYMMDDXX).
 $plugin->release = '1.1 (2014041500)';
+$plugin->component = 'block_booking';
 $plugin->cron = 0;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2013051400;
