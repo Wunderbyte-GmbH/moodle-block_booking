@@ -25,7 +25,7 @@
  */
 
 require_once('../../config.php');
-require_once('../../mod/booking/locallib.php');
+require_once('../../mod/booking/classes/all_userbookings.php');
 
 $courseid     = required_param('courseid', PARAM_INT);
 $sort         = optional_param('sort', null, PARAM_ALPHANUM);
@@ -46,6 +46,6 @@ $PAGE->navbar->add(get_string('booking:viewallbookings', 'block_booking'),$url);
 
 echo $OUTPUT->header();
 echo html_writer::tag('h1', get_string('title','block_booking'));
-$allbookings = new booking_all_bookings();
+$allbookings = new mod_booking\site_overview();
 echo $allbookings->display($sort);
 echo $OUTPUT->footer();
