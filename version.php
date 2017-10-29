@@ -20,16 +20,16 @@
  * @package    block
  * @subpackage booking
  * @author     David Bogner <info@edulabs.org>
- * @copyright  2014 www.edulabs.org
+ * @copyright  2014-2017 www.edulabs.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2017102500; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = '2.0 (2017102500)';
+$plugin->version = 2017102800; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = '2.0 (2017102800)';
 $plugin->component = 'block_booking';
 $plugin->cron = 0;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2016052300;
 $plugin->dependencies = array(
-                'mod_booking' => 2017102500
+                'mod_booking' => 2017102800
 );
