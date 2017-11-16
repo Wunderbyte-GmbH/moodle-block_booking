@@ -34,7 +34,7 @@ if (!$course = get_course($courseid)) {
     print_error('invalidaccess');
 }
 
-require_login($course);
+require_login($course, false);
 
 $url = new moodle_url('/blocks/booking/booking.php', array('courseid'=>$courseid));
 
