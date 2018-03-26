@@ -34,10 +34,10 @@ class block_booking extends block_base {
     function applicable_formats() {
         return array('all' => true);
     }
-    
+
     public function get_content() {
         global $USER, $CFG, $COURSE;
-        
+
         if ($this->content !== null) {
             return $this->content;
         }
@@ -48,12 +48,12 @@ class block_booking extends block_base {
 
         $this->content->text .= '<ul>';
         $this->content->text .= '<li>';
-        $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id.'&sort=user" >';
+        $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id .'">';
         $this->content->text .= get_string('booking:viewallbookings', 'block_booking');
         $this->content->text .= '</a>';
         $this->content->text .= '</li>';
         $this->content->text .= '</ul>';
-            
+
         return $this->content;
     }
 
