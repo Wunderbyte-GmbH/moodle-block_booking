@@ -46,6 +46,8 @@ $PAGE->navbar->add(get_string('booking:viewallbookings', 'block_booking'),$url);
 
 echo $OUTPUT->header();
 echo html_writer::tag('h1', get_string('title','block_booking'));
-$allbookings = new mod_booking\site_overview();
-echo $allbookings->display($sort);
+
+//$allbookings = new mod_booking\site_overview();
+//echo $allbookings->display($sort);
+
 echo $OUTPUT->footer();

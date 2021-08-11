@@ -42,17 +42,44 @@ class block_booking extends block_base {
             return $this->content;
         }
 
+        // The Modal HTML:
+        $modalhtml =
+          '<a href="#" data-toggle="modal" data-target="#booking-block-modal">' .
+                get_string("booking:viewallbookings", "block_booking") .
+            '</a>
+            <div class="modal fade" id="booking-block-modal" tabindex="-1" 
+                aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="bookingBlockModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    ...
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>';
+
+        // The content.
         $this->content = new stdClass();
         $this->content->text = '';
-        $this->content->footer = '';
+        $this->content->text .= $modalhtml;
 
-        $this->content->text .= '<ul>';
-        $this->content->text .= '<li>';
-        $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id .'">';
-        $this->content->text .= get_string('booking:viewallbookings', 'block_booking');
-        $this->content->text .= '</a>';
-        $this->content->text .= '</li>';
-        $this->content->text .= '</ul>';
+        // $this->content->text .= '<ul>';
+        // $this->content->text .= '<li>';
+        // $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id .'">';
+        // $this->content->text .= get_string('booking:viewallbookings', 'block_booking');
+        // $this->content->text .= '</a>';
+        // $this->content->text .= '</li>';
+        // $this->content->text .= '</ul>';
+
+        // The footer.
+        $this->content->footer = '';
 
         return $this->content;
     }
