@@ -19,8 +19,8 @@
  *
  * @package    block
  * @subpackage booking
- * @author     David Bogner <info@edulabs.org>
- * @copyright  2014 www.edulabs.org
+ * @author     David Bogner <info@wunderbyte.at>
+ * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
