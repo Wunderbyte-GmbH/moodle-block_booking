@@ -47,19 +47,19 @@ class block_booking extends block_base {
           '<a href="#" data-toggle="modal" data-target="#booking-block-modal">' .
                 get_string("booking:viewallbookings", "block_booking") .
             '</a>
-            <div class="modal fade" id="booking-block-modal" tabindex="-1" 
+            <div id="booking-block-modal" class="modal" tabindex="-1" role="dialog"
                 aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-fullscreen">
+              <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="bookingBlockModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn btn-closex" data-dismiss="modal">X</button>
                   </div>
                   <div class="modal-body">
-                    ...
+                    Content goes here...
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                   </div>
                 </div>
               </div>
@@ -68,6 +68,12 @@ class block_booking extends block_base {
         // The content.
         $this->content = new stdClass();
         $this->content->text = '';
+
+        // TODO:
+        /*$data = new coursepage_available_options($cm);
+        $output = $PAGE->get_renderer('mod_booking');
+        $html .= $output->render_coursepage_available_options($data);*/
+
         $this->content->text .= $modalhtml;
 
         // $this->content->text .= '<ul>';

@@ -1,0 +1,80 @@
+#booking-block-modal .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+#booking-block-modal .modal-dialog {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#booking-block-modal .modal-content {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+#booking-block-modal .modal-header {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 50px !important;
+    padding: 10px !important;
+    background: #263683 !important;
+    border: 0 !important;
+}
+
+#booking-block-modal .modal-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 50px !important;
+    padding: 5px !important;
+    background: #dddddd !important;
+    border: 0 !important;
+}
+
+#booking-block-modal .modal-title {
+    font-weight: 300;
+    font-size: 2em;
+    color: #fff;
+    line-height: 30px;
+}
+
+#booking-block-modal .modal-body {
+    position: fixed !important;
+    top: 50px !important;
+    bottom: 50px !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: auto !important;
+}
+
+#booking-block-modal .btn-closex {
+    background-color: #FFFFFF;
+    height: 30px;
+    width: 30px;
+    padding: 5px;
+    border-radius: 8px;
+}
