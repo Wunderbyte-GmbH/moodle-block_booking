@@ -33,11 +33,14 @@ $string['booking:addinstance'] = 'Block "Buchungen suchen (Schnellsuche)" hinzuf
 $string['booking:myaddinstance'] = 'Block "Buchungen suchen (Schnellsuche)" zum Dashboard hinzufügen';
 $string['booking:viewallbookings'] = 'Alle Buchungen ansehen';
 
+// Datei: block_booking.php.
+$string['createdbywunderbyte'] = 'Entwickelt mit &#128156; &nbsp;von <a href="https:www.wunderbyte.at">Wunderbyte</a>';
+
 // Datei: search_form.mustache.
 $string['sfcourse'] = 'Kursname';
 $string['sfbookingoption'] = 'Name der Buchungsoption';
-$string['sfcoursestarttime'] = 'Kursbeginn vor (oder an)';
-$string['sfcourseendtime'] = 'Kursende nach (oder an)';
+$string['sfcoursestarttime'] = 'Von';
+$string['sfcourseendtime'] = 'Bis';
 $string['sflocation'] = 'Location';
 $string['sfinstitution'] = 'Institution';
 $string['sfsearchbtn'] = 'Buchungen suchen...';

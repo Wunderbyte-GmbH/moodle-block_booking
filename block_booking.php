@@ -21,51 +21,43 @@ use block_booking\output\search_form;
  *
  * @package    block
  * @subpackage booking
- * @author     David Bogner <info@wunderbyte.at>
+ * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class block_booking extends block_base {
 
+    /**
+     * Initialize the internal variables and search form params.
+     * @throws coding_exception
+     */
     public function init() {
         $this->blockname = get_class($this);
         $this->title   = get_string('title', 'block_booking');
+
+        // Initialize search form params.
+        $this->searchbookingoption = $_POST['searchbookingoption'];
     }
 
+    /**
+     * All formats are allowed for the block.
+     * @return bool[]
+     */
     function applicable_formats() {
         return array('all' => true);
     }
 
+    /**
+     * Get content.
+     * @return stdClass|null
+     * @throws coding_exception
+     */
     public function get_content() {
         global $PAGE;
 
         if ($this->content !== null) {
             return $this->content;
         }
-
-        // The Modal HTML:
-        /* $modalhtml =
-          '<a href="#" data-toggle="modal" data-target="#booking-block-modal">' .
-                get_string("booking:viewallbookings", "block_booking") .
-            '</a>
-            <div id="booking-block-modal" class="modal" tabindex="-1" role="dialog"
-                aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="bookingBlockModalLabel">Modal title</h5>
-                    <button type="button" class="btn btn-closex" data-dismiss="modal">X</button>
-                  </div>
-                  <div class="modal-body">
-                    Content goes here...
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>'; */
 
         // The content.
         $this->content = new stdClass();
@@ -82,8 +74,6 @@ class block_booking extends block_base {
         $data = new fullscreen_modal();
         $this->content->text .= $output->render_fullscreen_modal($data);
 
-        //$this->content->text .= $modalhtml;
-
         // $this->content->text .= '<ul>';
         // $this->content->text .= '<li>';
         // $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id .'">';
@@ -93,11 +83,16 @@ class block_booking extends block_base {
         // $this->content->text .= '</ul>';
 
         // The footer.
-        $this->content->footer = '';
+        $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
+        $this->content->footer .= $this->searchbookingoption;
 
         return $this->content;
     }
 
+    /**
+     * This block currently has no settings.php.
+     * @return false
+     */
     public function has_config() {
         return false;
     }

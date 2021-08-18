@@ -32,11 +32,15 @@ $string['booking:addinstance'] = 'Add Bookings Quickfinder block';
 $string['booking:myaddinstance'] = 'Add Bookings Quickfinder block to Dashboard';
 $string['booking:viewallbookings'] = 'Overview of all bookings';
 
+// File: block_booking.php.
+$string['createdbywunderbyte'] = 'Developed with &#128156; &nbsp;by <a href="https:www.wunderbyte.at">Wunderbyte</a>';
+
 // File: search_form.mustache.
 $string['sfcourse'] = 'Course name';
 $string['sfbookingoption'] = 'Booking option name';
-$string['sfcoursestarttime'] = 'Course start time before (or at)';
-$string['sfcourseendtime'] = 'Course end time before (or at)';
+$string['sfcoursestarttime'] = 'From';
+$string['sfcourseendtime'] = 'Until';
 $string['sflocation'] = 'Location';
 $string['sfinstitution'] = 'Institution';
 $string['sfsearchbtn'] = 'Search bookings...';
+
