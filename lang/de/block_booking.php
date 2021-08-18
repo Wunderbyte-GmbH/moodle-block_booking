@@ -24,11 +24,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Buchungsübersicht';
-$string['title'] = 'Buchungsübersicht';
+$string['pluginname'] = 'Bookings Quickfinder Block';
+$string['title'] = 'Buchungen suchen (Schnellsuche)';
 $string['sortbycourse'] = 'Nach Kurs sortieren';
 $string['sortbyuser'] = 'Nach Nutzer/in sortieren';
 
-$string['booking:addinstance'] = 'Block Buchungsübersicht hinzufügen';
+$string['booking:addinstance'] = 'Block "Buchungen suchen (Schnellsuche)" hinzufügen';
+$string['booking:myaddinstance'] = 'Block "Buchungen suchen (Schnellsuche)" zum Dashboard hinzufügen';
 $string['booking:viewallbookings'] = 'Alle Buchungen ansehen';
 
+// Datei: search_form.mustache.
+$string['sfcourse'] = 'Kursname';
+$string['sfbookingoption'] = 'Name der Buchungsoption';
+$string['sfcoursestarttime'] = 'Kursbeginn vor (oder an)';
+$string['sfcourseendtime'] = 'Kursende nach (oder an)';
+$string['sflocation'] = 'Location';
+$string['sfinstitution'] = 'Institution';
+$string['sfsearchbtn'] = 'Buchungen suchen...';

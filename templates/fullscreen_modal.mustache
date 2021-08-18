@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_booking/searchresults_student
+    @template mod_booking/business_card
 
     Classes required for JS:
     * none
@@ -32,26 +32,23 @@
     Example context (json):
     <paste json here - as in mooduell/templates/viewpage.mustache>
 }}
-<!-- TODO: -->
-<!--<div class='list-group bookingoptions'>
-{{! #bookingoptions}}
-        <a class="list-group-item list-group-item-action" href={{! linktooption}}>
-            <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">{{! bookingoptionname}}</h5>
-                    <div>
-                      {{! {button}}}
-                    </div>
+<a href="#" data-toggle="modal" data-target="#booking-block-modal">
+    {{#str}} booking:viewallbookings, block_booking {{/str}}
+</a>
+<div id="booking-block-modal" class="modal" tabindex="-1" role="dialog"
+     aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingBlockModalLabel">{{#str}} title, block_booking {{/str}}</h5>
+                <button type="button" class="btn btn-closex" data-dismiss="modal">X</button>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-2"></div>
-                    <div>
-                        {{! #dates}}
-                            <small><p class="mb-1">{{! datestring}}</p></small>
-                        {{! /dates}}
-                    </div>
-                </div>
+            <div class="modal-body">
+                Content goes here...
             </div>
-        </a>
-{{! /bookingoptions}}
-</div>-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

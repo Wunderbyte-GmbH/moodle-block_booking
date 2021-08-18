@@ -29,6 +29,32 @@ defined('MOODLE_INTERNAL') || die();
 class renderer extends plugin_renderer_base {
 
     /**
+     * Render function for search_form template.
+     * @param $data array
+     * @return string
+     * @throws \moodle_exception
+     */
+    public function render_search_form($data) {
+        $o = '';
+        $data = $data->export_for_template($this);
+        $o .= $this->render_from_template('block_booking/search_form', $data);
+        return $o;
+    }
+
+    /**
+     * Render function for fullscreen_modal template.
+     * @param $data array
+     * @return string
+     * @throws \moodle_exception
+     */
+    public function render_fullscreen_modal($data) {
+        $o = '';
+        $data = $data->export_for_template($this);
+        $o .= $this->render_from_template('block_booking/fullscreen_modal', $data);
+        return $o;
+    }
+
+    /**
      * Render function for searchresults_student template.
      * @param $data array
      * @return string

@@ -13,6 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+use block_booking\output\fullscreen_modal;
+use block_booking\output\search_form;
 
 /**
  * Block base class.
@@ -36,14 +38,14 @@ class block_booking extends block_base {
     }
 
     public function get_content() {
-        global $USER, $CFG, $COURSE;
+        global $PAGE;
 
         if ($this->content !== null) {
             return $this->content;
         }
 
         // The Modal HTML:
-        $modalhtml =
+        /* $modalhtml =
           '<a href="#" data-toggle="modal" data-target="#booking-block-modal">' .
                 get_string("booking:viewallbookings", "block_booking") .
             '</a>
@@ -63,18 +65,24 @@ class block_booking extends block_base {
                   </div>
                 </div>
               </div>
-            </div>';
+            </div>'; */
 
         // The content.
         $this->content = new stdClass();
         $this->content->text = '';
 
-        // TODO:
-        /*$data = new coursepage_available_options($cm);
-        $output = $PAGE->get_renderer('mod_booking');
-        $html .= $output->render_coursepage_available_options($data);*/
+        // Get the renderer for this plugin.
+        $output = $PAGE->get_renderer('block_booking');
 
-        $this->content->text .= $modalhtml;
+        // Add the search form.
+        $data = new search_form();
+        $this->content->text .= $output->render_search_form($data);
+
+        // Add the fullscreen modal.
+        $data = new fullscreen_modal();
+        $this->content->text .= $output->render_fullscreen_modal($data);
+
+        //$this->content->text .= $modalhtml;
 
         // $this->content->text .= '<ul>';
         // $this->content->text .= '<li>';

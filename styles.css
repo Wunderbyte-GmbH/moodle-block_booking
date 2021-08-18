@@ -21,6 +21,7 @@
 
 #booking-block-modal .modal-content {
     position: fixed;
+    background-color: rgba(255, 255, 255, 0) !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
@@ -40,18 +41,7 @@
     height: 50px !important;
     padding: 10px !important;
     background: #263683 !important;
-    border: 0 !important;
-}
-
-#booking-block-modal .modal-footer {
-    position: fixed !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 50px !important;
-    padding: 5px !important;
-    background: #dddddd !important;
+    opacity: 0.8 !important;
     border: 0 !important;
 }
 
@@ -63,6 +53,7 @@
 }
 
 #booking-block-modal .modal-body {
+    background-color: rgba(255, 255, 255, 0.8) !important;
     position: fixed !important;
     top: 50px !important;
     bottom: 50px !important;
@@ -71,9 +62,23 @@
     overflow: auto !important;
 }
 
+#booking-block-modal .modal-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 50px !important;
+    padding: 5px !important;
+    background: #263683 !important;
+    opacity: 0.8 !important;
+    border: 0 !important;
+}
+
 #booking-block-modal .btn-closex {
     background-color: #FFFFFF;
-    height: 30px;
+    font-weight: bold;
+    height: 32px;
     width: 30px;
     padding: 5px;
     border-radius: 8px;

@@ -19,15 +19,24 @@
  *
  * @package    block
  * @subpackage booking
- * @author     David Bogner <info@wunderbyte.at>
+ * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-$string['pluginname'] = 'Bookings overview';
-$string['title'] = 'Bookings overview';
+$string['pluginname'] = 'Bookings Quickfinder block';
+$string['title'] = 'Bookings Quickfinder';
 $string['sortbycourse'] = 'Sort by course';
 $string['sortbyuser'] = 'Sort by user';
 
-$string['booking:addinstance'] = 'Add Bookings Overview block';
+$string['booking:addinstance'] = 'Add Bookings Quickfinder block';
+$string['booking:myaddinstance'] = 'Add Bookings Quickfinder block to Dashboard';
 $string['booking:viewallbookings'] = 'Overview of all bookings';
 
+// File: search_form.mustache.
+$string['sfcourse'] = 'Course name';
+$string['sfbookingoption'] = 'Booking option name';
+$string['sfcoursestarttime'] = 'Course start time before (or at)';
+$string['sfcourseendtime'] = 'Course end time before (or at)';
+$string['sflocation'] = 'Location';
+$string['sfinstitution'] = 'Institution';
+$string['sfsearchbtn'] = 'Search bookings...';
