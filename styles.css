@@ -83,3 +83,7 @@
     padding: 5px;
     border-radius: 8px;
 }
+
+.block_booking #id_sfmorefilters a.fheader {
+    font-size:1rem !important;
+}

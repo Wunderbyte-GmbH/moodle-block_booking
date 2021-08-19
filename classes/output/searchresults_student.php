@@ -48,6 +48,16 @@ class searchresults_student implements renderable, templatable {
     public $resultsarray = [];
 
     /**
+     * @var string|null $resultscount The message to be shown after search.
+     */
+    public $resultsmessage = null;
+
+    /**
+     * @var bool $success True when search results are found.
+     */
+    public $success = false;
+
+    /**
      * Constructor to prepare the data for the search results.
      * @param array $results An array containing the search results.
      */
@@ -56,7 +66,7 @@ class searchresults_student implements renderable, templatable {
         global $CFG;
 
         // Results are an array of objects but need to be typecast to an associative array so the template will work.
-        foreach($results as $objectentry) {
+        foreach ($results as $objectentry) {
 
             // Add a link to redirect to the clicked booking option.
             $link = new moodle_url($CFG->wwwroot . '/mod/booking/view.php', array(
@@ -71,6 +81,16 @@ class searchresults_student implements renderable, templatable {
             // Convert to array, otherwise the mustache template won't work.
             $this->resultsarray[] = (array) $objectentry;
         }
+
+        // Also count the results.
+        $count = count($this->resultsarray);
+        if ($count <= 0) {
+            $this->resultsmessage = get_string('nosearchresults', 'block_booking');
+            $this->success = false;
+        } else {
+            $this->resultsmessage = get_string('searchresultsfound', 'block_booking', ['count' => $count]);
+            $this->success = true;
+        }
     }
 
     /**
@@ -79,7 +99,9 @@ class searchresults_student implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         return array(
-            'results' => $this->resultsarray
+            'results' => $this->resultsarray,
+            'success' => $this->success,
+            'resultsmessage' => $this->resultsmessage
         );
     }
 }

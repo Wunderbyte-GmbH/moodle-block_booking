@@ -45,7 +45,7 @@ class search_form implements renderable, templatable {
     public $searchformhtml = '';
 
     /**
-     * Constructor to prepare the data for the fullscreen modal.
+     * Constructor to prepare the data to be shown in the template.
      * @param string $searchformhtml The HTML of the search form to pass to the template.
      */
     public function __construct($searchformhtml) {

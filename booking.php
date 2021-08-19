@@ -23,7 +23,7 @@
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+/*
 require_once('../../config.php');
 require_once('../../mod/booking/classes/all_userbookings.php');
 
@@ -51,3 +51,4 @@ echo html_writer::tag('h1', get_string('title','block_booking'));
 //echo $allbookings->display($sort);
 
 echo $OUTPUT->footer();
+*/

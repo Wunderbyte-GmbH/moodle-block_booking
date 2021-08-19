@@ -32,15 +32,48 @@
     Example context (json):
     <paste json here - as in mooduell/templates/viewpage.mustache>
 }}
-<div class="list-group">
-    {{#results}}
-    <a href="{{link}}" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{bookingoption}}</h5>
-            <small>3 days ago</small>
+{{#resultsmessage}}
+    {{#success}}
+        <a href="#" data-toggle="modal" data-target="#booking-block-modal">
+            <div class="alert alert-success" role="alert">
+                {{resultsmessage}}
+            </div>
+        </a>
+    {{/success}}
+    {{^success}}
+        <div class="alert alert-warning" role="alert">
+            {{resultsmessage}}
         </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small>Donec id elit non mi porta.</small>
-    </a>
-    {{/results}}
+    {{/success}}
+{{/resultsmessage}}
+
+<div id="booking-block-modal" class="modal in" tabindex="-1" role="dialog"
+     aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingBlockModalLabel">{{#str}} title, block_booking {{/str}}</h5>
+                <button type="button" class="btn btn-closex" data-dismiss="modal">X</button>
+            </div>
+            <div class="modal-body">
+                <!-- The actual content goes here. -->
+                <div class="list-group">
+                    {{#results}}
+                        <a href="{{link}}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{bookingoption}}</h5>
+                                <small>3 days ago</small>
+                            </div>
+                            <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                            <small>Donec id elit non mi porta.</small>
+                        </a>
+                    {{/results}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+

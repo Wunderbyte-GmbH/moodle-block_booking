@@ -19,7 +19,6 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once(dirname(__FILE__) . '/classes/form/search_form_student.php');
 
 use block_booking\form\search_form_student;
-use block_booking\output\fullscreen_modal;
 use block_booking\output\search_form;
 use block_booking\output\searchresults_student;
 
@@ -165,10 +164,6 @@ class block_booking extends block_base {
         // And redirect it to the search form template.
         $searchformdata = new search_form($this->searchformhtml);
         $this->content->text .= $output->render_search_form($searchformdata);
-
-        // Add the fullscreen modal.
-        $fullscreenmodaldata = new fullscreen_modal();
-        $this->content->text .= $output->render_fullscreen_modal($fullscreenmodaldata);
 
         // The footer.
         $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
