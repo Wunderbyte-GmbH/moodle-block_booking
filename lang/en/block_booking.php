@@ -36,11 +36,12 @@ $string['booking:viewallbookings'] = 'Overview of all bookings';
 $string['createdbywunderbyte'] = 'Developed with &#128156; &nbsp;by <a href="https:www.wunderbyte.at">Wunderbyte</a>';
 
 // File: search_form.mustache.
-$string['sfcourse'] = 'Course name';
-$string['sfbookingoption'] = 'Booking option name';
-$string['sfcoursestarttime'] = 'From';
-$string['sfcourseendtime'] = 'Until';
+$string['sfcourse'] = 'Course';
+$string['sfbookingoption'] = 'Booking option';
 $string['sflocation'] = 'Location';
 $string['sfinstitution'] = 'Institution';
-$string['sfsearchbtn'] = 'Search bookings...';
-
+$string['sftimespancheckbox'] = 'Search in specific time span...';
+$string['sfcoursestarttime'] = 'From';
+$string['sfcourseendtime'] = 'Until';
+$string['sfsearchbtn'] = 'Find bookings';
+$string['sfmorefilters'] = 'More filters...';

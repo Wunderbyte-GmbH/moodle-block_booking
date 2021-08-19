@@ -40,13 +40,16 @@ use templatable;
 class search_form implements renderable, templatable {
 
     /**
-     * Constructor to prepare the data for the fullscreen modal.
-     *
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
+     * @var string The HTML of the search form to be passed to the template.
      */
-    public function __construct() {
+    public $searchformhtml = '';
+
+    /**
+     * Constructor to prepare the data for the fullscreen modal.
+     * @param string $searchformhtml The HTML of the search form to pass to the template.
+     */
+    public function __construct($searchformhtml) {
+        $this->searchformhtml = $searchformhtml;
     }
 
     /**
@@ -55,6 +58,7 @@ class search_form implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         return array(
+            'searchformhtml' => $this->searchformhtml
         );
     }
 }

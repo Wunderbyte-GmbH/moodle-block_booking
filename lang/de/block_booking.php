@@ -19,11 +19,10 @@
  *
  * @package    block
  * @subpackage booking
- * @author     David Bogner <info@wunderbyte.at>
+ * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 $string['pluginname'] = 'Bookings Quickfinder Block';
 $string['title'] = 'Buchungen suchen (Schnellsuche)';
 $string['sortbycourse'] = 'Nach Kurs sortieren';
@@ -37,10 +36,12 @@ $string['booking:viewallbookings'] = 'Alle Buchungen ansehen';
 $string['createdbywunderbyte'] = 'Entwickelt mit &#128156; &nbsp;von <a href="https:www.wunderbyte.at">Wunderbyte</a>';
 
 // Datei: search_form.mustache.
-$string['sfcourse'] = 'Kursname';
-$string['sfbookingoption'] = 'Name der Buchungsoption';
+$string['sfcourse'] = 'Kurs';
+$string['sfbookingoption'] = 'Buchungsoption';
+$string['sflocation'] = 'Ort';
+$string['sfinstitution'] = 'Institution';
+$string['sftimespancheckbox'] = 'In bestimmtem Zeitraum suchen...';
 $string['sfcoursestarttime'] = 'Von';
 $string['sfcourseendtime'] = 'Bis';
-$string['sflocation'] = 'Location';
-$string['sfinstitution'] = 'Institution';
-$string['sfsearchbtn'] = 'Buchungen suchen...';
+$string['sfsearchbtn'] = 'Buchungen suchen';
+$string['sfmorefilters'] = 'Weitere Filter...';

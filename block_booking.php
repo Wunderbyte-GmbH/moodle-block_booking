@@ -13,8 +13,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+global $CFG;
+
+require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/classes/form/search_form_student.php');
+
+use block_booking\form\search_form_student;
 use block_booking\output\fullscreen_modal;
 use block_booking\output\search_form;
+use block_booking\output\searchresults_student;
 
 /**
  * Block base class.
@@ -28,6 +35,26 @@ use block_booking\output\search_form;
 class block_booking extends block_base {
 
     /**
+     * @var string $blockname The block name.
+     */
+    public $blockname = '';
+
+    /**
+     * @var string $title The block title.
+     */
+    public $title = '';
+
+    /**
+     * @var stdClass|null $searchformstudent The student search form object.
+     */
+    public $searchformstudent = null;
+
+    /**
+     * @var string $searchformhtml The code of the search form to be passed to the template.
+     */
+    public $searchformhtml = '';
+
+    /**
      * Initialize the internal variables and search form params.
      * @throws coding_exception
      */
@@ -35,8 +62,14 @@ class block_booking extends block_base {
         $this->blockname = get_class($this);
         $this->title   = get_string('title', 'block_booking');
 
-        // Initialize search form params.
-        $this->searchbookingoption = $_POST['searchbookingoption'];
+        // Initialize the search form.
+        $this->searchformstudent = new search_form_student();
+
+        // Collect the search form HTML in a buffer.
+        ob_start();
+        $this->searchformstudent->display();
+        // And store it in a member variable.
+        $this->searchformhtml = ob_get_clean();
     }
 
     /**
@@ -53,38 +86,92 @@ class block_booking extends block_base {
      * @throws coding_exception
      */
     public function get_content() {
-        global $PAGE;
+        global $DB, $PAGE, $USER;
 
         if ($this->content !== null) {
             return $this->content;
         }
 
+        // Get the renderer for this plugin.
+        $output = $PAGE->get_renderer('block_booking');
+
         // The content.
         $this->content = new stdClass();
         $this->content->text = '';
 
-        // Get the renderer for this plugin.
-        $output = $PAGE->get_renderer('block_booking');
+        // Process the form data after submit button has been pressed.
+        if ($fromform = $this->searchformstudent->get_data()) {
+            $sfcourse = $fromform->sfcourse;
+            $sfbookingoption = $fromform->sfbookingoption;
+            $sflocation = $fromform->sflocation;
+            $sfinstitution = $fromform->sfinstitution;
 
-        // Add the search form.
-        $data = new search_form();
-        $this->content->text .= $output->render_search_form($data);
+            // Only use timespan from form if checkbox is active.
+            if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
+                $sfcoursestarttime = $fromform->sfcoursestarttime;
+                $sfcourseendtime = $fromform->sfcourseendtime;
+            } else {
+                $sfcoursestarttime = 0;
+                $sfcourseendtime = 9999999999;
+            }
+
+            // Create the conditions params for the SQL.
+            $conditionsparams = [
+                "sfcourse" => "%{$sfcourse}%",
+                "sfbookingoption" => "%{$sfbookingoption}%",
+                "sflocation" => "%{$sflocation}%",
+                "sfinstitution" => "%{$sfinstitution}%",
+                "sfcoursestarttime" => $sfcoursestarttime,
+                "sfcourseendtime" => $sfcourseendtime,
+            ];
+
+            // Get all courses where the current user is enrolled and active.
+            $enrolledactivecoursesids = [];
+            $enrolledactivecourses = enrol_get_users_courses($USER->id, true, ['id']);
+            foreach($enrolledactivecourses as $courserecord) {
+                $enrolledactivecoursesids[] = $courserecord->id;
+            }
+            // Get the 'in' part of the SQL.
+            list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
+
+            $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text bookingoption, c.id courseid, c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime
+                    FROM {booking_options} bo
+                    LEFT JOIN {course} c
+                    ON c.id = bo.courseid
+                    LEFT JOIN (SELECT cm.id cmid, cm.instance bookingid
+                    FROM {course_modules} cm
+                    WHERE module in (
+                      SELECT id FROM {modules} WHERE name = "booking"
+                    )) s1
+                    ON bo.bookingid = s1.bookingid
+                    WHERE bo.text like :sfbookingoption
+                    AND c.fullname like :sfcourse
+                    AND bo.location like :sflocation
+                    AND bo.institution like :sfinstitution
+                    AND bo.coursestarttime >= :sfcoursestarttime
+                    AND bo.courseendtime <= :sfcourseendtime
+                    AND c.id ' . $insql;
+
+            $allparams = array_merge($conditionsparams, $inparams);
+
+            // Now let's get those search results.
+            $results = $DB->get_records_sql($sql, $allparams);
+
+            // And prepare them for the template.
+            $searchresultsstudent = new searchresults_student($results);
+            $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
+        }
+
+        // And redirect it to the search form template.
+        $searchformdata = new search_form($this->searchformhtml);
+        $this->content->text .= $output->render_search_form($searchformdata);
 
         // Add the fullscreen modal.
-        $data = new fullscreen_modal();
-        $this->content->text .= $output->render_fullscreen_modal($data);
-
-        // $this->content->text .= '<ul>';
-        // $this->content->text .= '<li>';
-        // $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/booking/booking.php?courseid='.$COURSE->id .'">';
-        // $this->content->text .= get_string('booking:viewallbookings', 'block_booking');
-        // $this->content->text .= '</a>';
-        // $this->content->text .= '</li>';
-        // $this->content->text .= '</ul>';
+        $fullscreenmodaldata = new fullscreen_modal();
+        $this->content->text .= $output->render_fullscreen_modal($fullscreenmodaldata);
 
         // The footer.
         $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
-        $this->content->footer .= $this->searchbookingoption;
 
         return $this->content;
     }
