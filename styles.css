@@ -87,3 +87,7 @@
 .block_booking #id_sfmorefilters a.fheader {
     font-size:1rem !important;
 }
+
+.block_booking .alert-primary {
+    font-weight: bold !important;
+}
