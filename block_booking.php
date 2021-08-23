@@ -98,6 +98,27 @@ class block_booking extends block_base {
         $this->content = new stdClass();
         $this->content->text = '';
 
+        // The search results.
+        $results = $this->search_booking_options_student_view();
+        $searchresultsstudent = new searchresults_student($results);
+        $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
+
+        // The search form.
+        $searchformdata = new search_form($this->searchformhtml);
+        $this->content->text .= $output->render_search_form($searchformdata);
+
+        // The footer.
+        $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
+
+        return $this->content;
+    }
+
+    /**
+     * Function to process the form data and do the search for the students view.
+     */
+    private function search_booking_options_student_view() {
+        global $DB, $USER;
+
         // Process the form data after submit button has been pressed.
         if ($fromform = $this->searchformstudent->get_data()) {
             $sfcourse = $fromform->sfcourse;
@@ -156,19 +177,8 @@ class block_booking extends block_base {
             // Now let's get those search results.
             $results = $DB->get_records_sql($sql, $allparams);
 
-            // And prepare them for the template.
-            $searchresultsstudent = new searchresults_student($results);
-            $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
+            return $results;
         }
-
-        // And redirect it to the search form template.
-        $searchformdata = new search_form($this->searchformhtml);
-        $this->content->text .= $output->render_search_form($searchformdata);
-
-        // The footer.
-        $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
-
-        return $this->content;
     }
 
     /**

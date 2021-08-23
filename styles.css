@@ -1,20 +1,18 @@
 #booking-block-modal .modal {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    top: 40px !important;
+    right: 60px !important;
+    bottom: 40px !important;
+    left: 60px !important;
     overflow: hidden;
 }
 
 #booking-block-modal .modal-dialog {
     position: fixed;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    top: 40px !important;
+    left: 60px !important;
+    right: 60px !important;
+    bottom: 40px !important;
     width: 100% !important;
     height: 100% !important;
 }
@@ -22,26 +20,22 @@
 #booking-block-modal .modal-content {
     position: fixed;
     background-color: rgba(255, 255, 255, 0) !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    top: 40px !important;
+    left: 60px !important;
+    right: 60px !important;
+    bottom: 40px !important;
     width: 100% !important;
     height: auto !important;
 }
 
 #booking-block-modal .modal-header {
     position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
+    top: 40px !important;
+    right: 60px !important;
+    left: 60px !important;
     height: 50px !important;
     padding: 10px !important;
     background: #263683 !important;
-    opacity: 0.8 !important;
     border: 0 !important;
 }
 
@@ -55,19 +49,19 @@
 #booking-block-modal .modal-body {
     background-color: rgba(255, 255, 255, 0.8) !important;
     position: fixed !important;
-    top: 50px !important;
-    bottom: 50px !important;
-    width: 100% !important;
+    top: 90px !important;
+    bottom: 90px !important;
+    right: 60px !important;
+    left: 60px !important;
     height: auto !important;
     overflow: auto !important;
 }
 
 #booking-block-modal .modal-footer {
     position: fixed !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
+    bottom: 40px !important;
+    right: 60px !important;
+    left: 60px !important;
     height: 50px !important;
     padding: 5px !important;
     background: #263683 !important;

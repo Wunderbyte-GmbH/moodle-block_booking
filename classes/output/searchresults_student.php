@@ -68,6 +68,12 @@ class searchresults_student implements renderable, templatable {
         // Results are an array of objects but need to be typecast to an associative array so the template will work.
         foreach ($results as $objectentry) {
 
+            // Prepare date string.
+            if ($objectentry->coursestarttime != 0 && $objectentry->courseendtime != 0) {
+                $objectentry->datestring = userdate($objectentry->coursestarttime, get_string('strftimedatetime'))
+                    . ' - ' . userdate($objectentry->courseendtime, get_string('strftimedatetime'));
+            }
+
             // Add a link to redirect to the clicked booking option.
             $link = new moodle_url($CFG->wwwroot . '/mod/booking/view.php', array(
                 'id' => $objectentry->cmid,
