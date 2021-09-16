@@ -73,10 +73,12 @@ class search_form_student extends moodleform {
         $mform->addElement('date_time_selector', 'sfcoursestarttime', get_string('sfcoursestarttime', 'block_booking'));
         $mform->setType('sfcoursestarttime', PARAM_INT);
         $mform->hideIf('sfcoursestarttime', 'sftimespancheckbox');
+        $mform->setDefault('sfcoursestarttime', strtotime(date('Y-m-d') . ' 00:00'));
 
         $mform->addElement('date_time_selector', 'sfcourseendtime', get_string('sfcourseendtime', 'block_booking'));
         $mform->setType('sfcourseendtime', PARAM_INT);
         $mform->hideIf('sfcourseendtime', 'sftimespancheckbox');
+        $mform->setDefault('sfcourseendtime', strtotime(date('Y-m-d') . ' 23:59'));
 
         $this->add_action_buttons(false, get_string('sfsearchbtn', 'block_booking'));
     }
