@@ -22,6 +22,8 @@ use block_booking\form\search_form_student;
 use block_booking\output\search_form;
 use block_booking\output\searchresults_student;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Block base class.
  *
@@ -58,8 +60,32 @@ class block_booking extends block_base {
      * @throws coding_exception
      */
     public function init() {
-        $this->blockname = get_class($this);
         $this->title   = get_string('title', 'block_booking');
+    }
+
+    /**
+     * All formats are allowed for the block.
+     * @return bool[]
+     */
+    function applicable_formats() {
+        return array(
+            'my' => true,
+            'course-view' => true,
+            'course-view-social' => false
+        );
+    }
+
+    /**
+     * Get content.
+     * @return stdClass|null
+     * @throws coding_exception
+     */
+    public function get_content() {
+        global $PAGE;
+
+        if ($this->content !== null) {
+            return $this->content;
+        }
 
         // Initialize the search form.
         $this->searchformstudent = new search_form_student();
@@ -69,27 +95,6 @@ class block_booking extends block_base {
         $this->searchformstudent->display();
         // And store it in a member variable.
         $this->searchformhtml = ob_get_clean();
-    }
-
-    /**
-     * All formats are allowed for the block.
-     * @return bool[]
-     */
-    function applicable_formats() {
-        return array('all' => true);
-    }
-
-    /**
-     * Get content.
-     * @return stdClass|null
-     * @throws coding_exception
-     */
-    public function get_content() {
-        global $DB, $PAGE, $USER;
-
-        if ($this->content !== null) {
-            return $this->content;
-        }
 
         // Get the renderer for this plugin.
         $output = $PAGE->get_renderer('block_booking');
