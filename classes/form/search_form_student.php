@@ -44,8 +44,13 @@ class search_form_student extends moodleform {
      * Defines the form fields.
      */
     public function definition() {
+        global $COURSE;
 
         $mform = $this->_form;
+
+        // Important: This is needed to make the block work within courses.
+        $mform->addElement('hidden', 'id', $COURSE->id);
+        $mform->setType('id', PARAM_INT);
 
         $mform->addElement('text', 'sfcourse', get_string('sfcourse', 'block_booking'));
         $mform->setType('sfcourse', PARAM_TEXT);
