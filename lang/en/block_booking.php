@@ -31,6 +31,8 @@ $string['sortbyuser'] = 'Sort by user';
 $string['booking:addinstance'] = 'Add Bookings Quickfinder block';
 $string['booking:myaddinstance'] = 'Add Bookings Quickfinder block to Dashboard';
 $string['booking:viewallbookings'] = 'Overview of all bookings';
+$string['booking:managesitebookingoptions'] = 'Manage all booking options on the whole site';
+
 
 // File: block_booking.php.
 $string['createdbywunderbyte'] = 'Developed with &#128156; &nbsp;by <a href="https:www.wunderbyte.at">Wunderbyte</a>';

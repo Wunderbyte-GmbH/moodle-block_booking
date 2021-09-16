@@ -31,6 +31,7 @@ $string['sortbyuser'] = 'Nach Nutzer/in sortieren';
 $string['booking:addinstance'] = 'Block "Buchungen suchen (Schnellsuche)" hinzufügen';
 $string['booking:myaddinstance'] = 'Block "Buchungen suchen (Schnellsuche)" zum Dashboard hinzufügen';
 $string['booking:viewallbookings'] = 'Alle Buchungen ansehen';
+$string['booking:managesitebookingoptions'] = 'Alle Buchungsoptionen auf der gesamten Plattform verwalten';
 
 // Datei: block_booking.php.
 $string['createdbywunderbyte'] = 'Entwickelt mit &#128156; &nbsp;von <a href="https:www.wunderbyte.at">Wunderbyte</a>';

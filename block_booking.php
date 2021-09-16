@@ -115,6 +115,12 @@ class block_booking extends block_base {
         // The footer.
         $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
 
+        //TODO: use this to display the manager form with table_sql
+        /*$context = context_system::instance();
+        if (has_capability('block/booking:managesitebookingoptions', $context)) {
+            // $this->content->footer .= 'you are a manager';
+        }*/
+
         return $this->content;
     }
 
