@@ -29,15 +29,15 @@ defined('MOODLE_INTERNAL') || die();
 class renderer extends plugin_renderer_base {
 
     /**
-     * Render function for search_form template.
+     * Render function for search_form_container template.
      * @param $data array
      * @return string
      * @throws \moodle_exception
      */
-    public function render_search_form($data) {
+    public function render_search_form_container($data) {
         $o = '';
         $data = $data->export_for_template($this);
-        $o .= $this->render_from_template('block_booking/search_form', $data);
+        $o .= $this->render_from_template('block_booking/search_form_container', $data);
         return $o;
     }
 
@@ -51,6 +51,19 @@ class renderer extends plugin_renderer_base {
         $o = '';
         $data = $data->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_student', $data);
+        return $o;
+    }
+
+    /**
+     * Render function for searchresults_manager template.
+     * @param $data array
+     * @return string
+     * @throws \moodle_exception
+     */
+    public function render_searchresults_manager($data) {
+        $o = '';
+        $data = $data->export_for_template($this);
+        $o .= $this->render_from_template('block_booking/searchresults_manager', $data);
         return $o;
     }
 }

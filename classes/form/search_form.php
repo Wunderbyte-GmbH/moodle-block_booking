@@ -38,7 +38,7 @@ use moodleform;
  * @author    Bernhard Fischer
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class search_form_student extends moodleform {
+class search_form extends moodleform {
 
     /**
      * Defines the form fields.

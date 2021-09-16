@@ -37,7 +37,7 @@ use templatable;
  * @copyright 2021 Wunderbyte GmbH {@link http://www.wunderbyte.at}
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class search_form implements renderable, templatable {
+class search_form_container implements renderable, templatable {
 
     /**
      * @var string The HTML of the search form to be passed to the template.
