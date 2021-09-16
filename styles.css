@@ -78,6 +78,10 @@
     border-radius: 8px;
 }
 
+#booking-block-modal .list-group-item {
+    min-height: 6.5em;
+}
+
 .block_booking #id_sfmorefilters a.fheader {
     font-size:1rem !important;
 }
