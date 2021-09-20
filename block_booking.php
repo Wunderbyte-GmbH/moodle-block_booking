@@ -192,17 +192,20 @@ class block_booking extends block_base {
             // Get the 'in' part of the SQL.
             list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
 
-            $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime
+            $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, 
+                        bo.institution, bo.coursestarttime, bo.courseendtime
                     FROM {booking_options} bo
                     LEFT JOIN {course} c
                     ON c.id = bo.courseid
-                    LEFT JOIN (SELECT cm.id cmid, cm.instance bookingid
+                    LEFT JOIN (SELECT cm.id cmid, cm.instance bookingid, cm.visible
                     FROM {course_modules} cm
                     WHERE module in (
                       SELECT id FROM {modules} WHERE name = "booking"
                     )) s1
                     ON bo.bookingid = s1.bookingid
-                    WHERE bo.text like :sfbookingoption
+                    WHERE bo.bookingid <> 0
+                    AND s1.visible <> 0
+                    AND bo.text like :sfbookingoption
                     AND c.fullname like :sfcourse
                     AND bo.location like :sflocation
                     AND bo.institution like :sfinstitution
@@ -249,12 +252,12 @@ class block_booking extends block_base {
                 'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime';
 
             $from = '{booking_options} bo LEFT JOIN {course} c ON c.id = bo.courseid LEFT JOIN (SELECT cm.id cmid, ' .
-                'cm.instance bookingid FROM {course_modules} cm WHERE module in (SELECT id FROM {modules} ' .
+                'cm.instance bookingid, cm.visible FROM {course_modules} cm WHERE module in (SELECT id FROM {modules} ' .
                 'WHERE name = "booking")) s1 ON bo.bookingid = s1.bookingid';
 
-            $where = 'bo.text like :sfbookingoption AND c.fullname like :sfcourse AND bo.location like :sflocation' .
-                'AND bo.institution like :sfinstitution AND bo.coursestarttime >= :sfcoursestarttime ' .
-                'AND bo.courseendtime <= :sfcourseendtime';
+            $where = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :sfbookingoption AND c.fullname like :sfcourse ' .
+                'AND bo.location like :sflocation AND bo.institution like :sfinstitution  ' .
+                'AND bo.coursestarttime >= :sfcoursestarttime AND bo.courseendtime <= :sfcourseendtime';
 
             $params = [
                 "sfcourse" => "%{$sfcourse}%",
