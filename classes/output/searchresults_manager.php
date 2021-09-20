@@ -26,7 +26,7 @@ namespace block_booking\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use moodle_url;
+use coding_exception;
 use renderer_base;
 use renderable;
 use templatable;
@@ -58,47 +58,21 @@ class searchresults_manager implements renderable, templatable {
 
     /**
      * Constructor to prepare the data for the search results.
-     * @param array $results An array containing the search results.
+     * @param $searchresultstablehtml
+     * @param $count
+     * @throws coding_exception
      */
-    public function __construct($searchresultstablehtml) {
-
-        global $CFG;
+    public function __construct($searchresultstablehtml, $count) {
 
         $this->searchresultstablehtml = $searchresultstablehtml;
 
-        // Results are an array of objects but need to be typecast to an associative array so the template will work.
-        /*foreach ($results as $objectentry) {
-
-            // Prepare date string.
-            if ($objectentry->coursestarttime != 0 && $objectentry->courseendtime != 0) {
-                $objectentry->datestring = userdate($objectentry->coursestarttime, get_string('strftimedatetime'))
-                    . ' - ' . userdate($objectentry->courseendtime, get_string('strftimedatetime'));
-            }
-
-            // Add a link to redirect to the clicked booking option.
-            $link = new moodle_url($CFG->wwwroot . '/mod/booking/view.php', array(
-                'id' => $objectentry->cmid,
-                'optionid' => $objectentry->optionid,
-                'action' => 'showonlyone',
-                'whichview' => 'showonlyone'
-            ));
-            // Use html_entity_decode to convert "&amp;" to a simple "&" character.
-            $objectentry->link = html_entity_decode($link->out());
-
-            // Convert to array, otherwise the mustache template won't work.
-            $this->resultsarray[] = (array) $objectentry;
-        }*/
-
-        // TODO: Also count the results and show appropriate messages.
-        /*$count = count($this->resultsarray);
         if ($count <= 0) {
             $this->resultsmessage = get_string('nosearchresults', 'block_booking');
             $this->success = false;
-        } else {*/
-            // $this->resultsmessage = get_string('searchresultsfound', 'block_booking', ['count' => $count]);
-            $this->resultsmessage = get_string('searchresultsfound', 'block_booking', ['count' => '???']);
+        } else {
+            $this->resultsmessage = get_string('searchresultsfound', 'block_booking', ['count' => $count]);
             $this->success = true;
-        //}
+        }
     }
 
     /**

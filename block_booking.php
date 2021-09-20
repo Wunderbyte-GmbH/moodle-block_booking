@@ -112,11 +112,11 @@ class block_booking extends block_base {
 
         if (has_capability('block/booking:managesitebookingoptions', $this->context)) {
             // For managers, create search results as a table.
+            $resultstablehtml = '';
 
             $sqldata = $this->search_booking_options_manager_get_sqldata();
 
-            // Cast to array is necessary because empty does not work on objects.
-            if (!empty((array)$sqldata)) {
+            if (!empty($sqldata->count)) {
                 $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
                 $resultstable->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
 
@@ -124,12 +124,10 @@ class block_booking extends block_base {
                 ob_start();
                 $resultstable->out(40, true);
                 $resultstablehtml = ob_get_clean();
-
-                $searchresultsmanager = new searchresults_manager($resultstablehtml);
-                $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
             }
 
-            // TODO: show search results for managers.
+            $searchresultsmanager = new searchresults_manager($resultstablehtml, $sqldata->count);
+            $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
 
         } else {
             // Show search results for students.
@@ -227,6 +225,7 @@ class block_booking extends block_base {
      * @return stdClass An object containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
      */
     private function search_booking_options_manager_get_sqldata(): stdClass {
+        global $DB;
 
         // If no form data can be fetched an empty object will be returned.
         $sqldata = new stdClass();
@@ -268,11 +267,18 @@ class block_booking extends block_base {
                 "sfcourseendtime" => $sfcourseendtime,
             ];
 
-            $sqldata->fields = $fields;
-            $sqldata->from = $from;
-            $sqldata->where = $where;
-            $sqldata->params = $params;
+            // Execute the query once to determine the number of results.
+            if ($count = count($DB->get_records_sql('SELECT ' . $fields . ' FROM ' . $from . ' WHERE ' . $where,
+                $params))) {
+                $sqldata->fields = $fields;
+                $sqldata->from = $from;
+                $sqldata->where = $where;
+                $sqldata->params = $params;
+            }
+            // Store count in the SQL data object.
+            $sqldata->count = $count;
         }
+
         return $sqldata;
     }
 
