@@ -26,7 +26,7 @@ namespace block_booking\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use html_writer;
+use mod_booking\booking_utils;
 use moodle_url;
 use renderer_base;
 use renderable;
@@ -67,6 +67,9 @@ class searchresults_student implements renderable, templatable {
 
         // Results are an array of objects but need to be typecast to an associative array so the template will work.
         foreach ($results as $objectentry) {
+
+            // Remove identifier key and separator if necessary.
+            booking_utils::transform_unique_bookingoption_name_to_display_name($objectentry);
 
             // Prepare date string.
             if ($objectentry->coursestarttime != 0 && $objectentry->courseendtime != 0) {

@@ -192,7 +192,7 @@ class block_booking extends block_base {
             // Get the 'in' part of the SQL.
             list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
 
-            $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text bookingoption, c.id courseid, c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime
+            $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime
                     FROM {booking_options} bo
                     LEFT JOIN {course} c
                     ON c.id = bo.courseid
@@ -245,7 +245,7 @@ class block_booking extends block_base {
             }
 
             // Create all parts of the SQL select query.
-            $fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text bookingoption, c.id courseid, c.fullname course, ' .
+            $fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
                 'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime';
 
             $from = '{booking_options} bo LEFT JOIN {course} c ON c.id = bo.courseid LEFT JOIN (SELECT cm.id cmid, ' .
