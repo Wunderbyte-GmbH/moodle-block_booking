@@ -82,6 +82,14 @@
     min-height: 6.5em;
 }
 
+#booking-block-modal .table {
+    background-color: white;
+}
+
+#booking-block-modal .fa-minus {
+    display: none;
+}
+
 .block_booking #id_sfmorefilters a.fheader {
     font-size:1rem !important;
 }
