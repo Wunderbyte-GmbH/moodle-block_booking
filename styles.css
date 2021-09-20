@@ -86,6 +86,13 @@
     background-color: white;
 }
 
+#booking-block-modal .table .header a{
+    cursor: default;
+    pointer-events: none;
+    text-decoration: none;
+    color: black;
+}
+
 #booking-block-modal .fa-minus {
     display: none;
 }
