@@ -91,9 +91,17 @@ class searchresults_student implements renderable, templatable {
             $this->resultsarray[] = (array) $objectentry;
         }
 
-        // Also count the results.
-        $count = count($this->resultsarray);
-        if ($count <= 0) {
+        if ($results === null) {
+            $count = -1; // On initializing.
+        } else {
+            // Count the results.
+            $count = count($this->resultsarray);
+        }
+
+        if ($count === -1) {
+            $this->resultsmessage = '';
+            $this->success = false;
+        } else if ($count === 0) {
             $this->resultsmessage = get_string('nosearchresults', 'block_booking');
             $this->success = false;
         } else {

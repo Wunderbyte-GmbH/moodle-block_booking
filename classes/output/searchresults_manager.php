@@ -66,7 +66,11 @@ class searchresults_manager implements renderable, templatable {
 
         $this->searchresultstablehtml = $searchresultstablehtml;
 
-        if ($count <= 0) {
+        if ($count === -1) {
+            // Do not set a results message on initializing.
+            $this->resultsmessage = '';
+            $this->success = false;
+        } else if ($count === 0) {
             $this->resultsmessage = get_string('nosearchresults', 'block_booking');
             $this->success = false;
         } else {

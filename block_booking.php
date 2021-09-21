@@ -124,6 +124,10 @@ class block_booking extends block_base {
                 $resultstablehtml = ob_get_clean();
             }
 
+            // If the search has not run yet, set count to -1.
+            if (!isset($sqldata->count)) {
+                $sqldata->count = -1;
+            }
             $searchresultsmanager = new searchresults_manager($resultstablehtml, $sqldata->count);
             $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
 
