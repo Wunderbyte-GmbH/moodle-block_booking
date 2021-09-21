@@ -88,8 +88,6 @@ class block_booking extends block_base {
         // Set system context.
         $this->context = context_system::instance();
 
-        $PAGE->set_context($this->context);
-
         if ($this->content !== null) {
             return $this->content;
         }
