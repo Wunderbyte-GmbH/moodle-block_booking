@@ -104,3 +104,7 @@
 .block_booking .alert-primary {
     font-weight: bold !important;
 }
+
+.block_booking .footer {
+    text-align: center;
+}
