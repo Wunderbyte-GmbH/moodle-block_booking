@@ -32,4 +32,10 @@ $blockbooking = new block_booking();
 
 $sqldata = $blockbooking->search_booking_options_manager_get_sqldata();
 
-$tabel = new bookingoptions_simple_table('block_booking_resultstable');
+$table = new bookingoptions_simple_table('block_booking_resultstable');
+
+$table->set_sql($sqldata);
+
+$table->define_baseurl("$CFG->wwwroot/blocks/booking/block_booking_table.php");
+
+$table->out(40, true);

@@ -83,7 +83,7 @@ class block_booking extends block_base {
      * @throws coding_exception
      */
     public function get_content() {
-        global $PAGE;
+        global $PAGE, $CFG;
 
         // Set system context.
         $this->context = context_system::instance();
@@ -125,6 +125,9 @@ class block_booking extends block_base {
 
                 // Write the results table to buffer and store HTML in a variable.
                 ob_start();
+
+                $resultstable->define_baseurl("$CFG->wwwroot/blocks/booking/block_booking_table.php");
+
                 $resultstable->out(40, true);
                 $resultstablehtml = ob_get_clean();
             }
