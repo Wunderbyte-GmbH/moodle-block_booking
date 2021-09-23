@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 global $CFG, $PAGE, $COURSE;
 
 require_once("../../config.php");
@@ -24,7 +22,6 @@ require_login($COURSE);
 require("$CFG->libdir/tablelib.php");
 
 use mod_booking\table\bookingoptions_simple_table;
-use block_booking;
 
 $download = optional_param('download', '', PARAM_ALPHA);
 

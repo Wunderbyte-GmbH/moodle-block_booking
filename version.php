@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2021091600; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version = 2021092301; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->release = '2.5';
 $plugin->component = 'block_booking';
 $plugin->cron = 0;
