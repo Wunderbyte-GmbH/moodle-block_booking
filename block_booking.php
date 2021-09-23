@@ -18,6 +18,7 @@ global $CFG;
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once(dirname(__FILE__) . '/classes/form/search_form.php');
+require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
 
 use block_booking\form\search_form;
 use block_booking\output\search_form_container;
@@ -59,6 +60,36 @@ class block_booking extends block_base {
     public $context = '';
 
     /**
+     * @var string $sfcourse Search form parameter: Course name.
+     */
+    public $sfcourse = '';
+
+    /**
+     * @var string $sfbookingoption Search form parameter: Booking option name.
+     */
+    public $sfbookingoption = '';
+
+    /**
+     * @var string $sflocation Search form parameter: Location.
+     */
+    public $sflocation = '';
+
+    /**
+     * @var string $sfinstitution Search form parameter: Institution.
+     */
+    public $sfinstitution = '';
+
+    /**
+     * @var string $sfcoursestarttime Search form parameter: Course start time.
+     */
+    public $sfcoursestarttime = '';
+
+    /**
+     * @var string $sfcourseendtime Search form parameter: Course end time.
+     */
+    public $sfcourseendtime = '';
+
+    /**
      * Initialize the internal variables and search form params.
      * @throws coding_exception
      */
@@ -89,6 +120,9 @@ class block_booking extends block_base {
         // Set system context.
         $this->context = context_system::instance();
 
+        // Count of result rows.
+        $count = -1;
+
         if ($this->content !== null) {
             return $this->content;
         }
@@ -115,29 +149,31 @@ class block_booking extends block_base {
 
             $sqldata = $this->search_booking_options_manager_get_sqldata();
 
-            if (!empty($sqldata->count)) {
-                // TODO: How can we get download to work in a buffered table???
-                $download = optional_param('download', '', PARAM_ALPHA);
-
+            if (!empty((array) $sqldata)) {
                 $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
-                // TODO: How can we get download to work in a buffered table???
-                $resultstable->is_downloading($download, 'test', 'testing123');
+
+                $resultstable->is_downloading(false); // This is necessary to show download button.
                 $resultstable->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
+
+                $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php",
+                    [
+                        'sfcourse' => $this->sfcourse,
+                        'sfbookingoption' => $this->sfbookingoption,
+                        'sflocation' => $this->sflocation,
+                        'sfinstitution' => $this->sfinstitution,
+                        'sfcoursestarttime' => $this->sfcoursestarttime,
+                        'sfcourseendtime' => $this->sfcourseendtime,
+                    ]);
 
                 // Write the results table to buffer and store HTML in a variable.
                 ob_start();
-
-                $resultstable->define_baseurl("$CFG->wwwroot/blocks/booking/block_booking_table.php");
-
+                $resultstable->define_baseurl($baseurl);
                 $resultstable->out(40, true);
+                $count = $resultstable->totalrows;
                 $resultstablehtml = ob_get_clean();
             }
 
-            // If the search has not run yet, set count to -1.
-            if (!isset($sqldata->count)) {
-                $sqldata->count = -1;
-            }
-            $searchresultsmanager = new searchresults_manager($resultstablehtml, $sqldata->count);
+            $searchresultsmanager = new searchresults_manager($resultstablehtml, $count);
             $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
 
         } else {
@@ -168,28 +204,28 @@ class block_booking extends block_base {
 
         // Process the form data after submit button has been pressed.
         if ($fromform = $this->searchform->get_data()) {
-            $sfcourse = $fromform->sfcourse;
-            $sfbookingoption = $fromform->sfbookingoption;
-            $sflocation = $fromform->sflocation;
-            $sfinstitution = $fromform->sfinstitution;
+            $this->sfcourse = $fromform->sfcourse;
+            $this->sfbookingoption = $fromform->sfbookingoption;
+            $this->sflocation = $fromform->sflocation;
+            $this->sfinstitution = $fromform->sfinstitution;
 
             // Only use timespan from form if checkbox is active.
             if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
-                $sfcoursestarttime = $fromform->sfcoursestarttime;
-                $sfcourseendtime = $fromform->sfcourseendtime;
+                $this->sfcoursestarttime = $fromform->sfcoursestarttime;
+                $this->sfcourseendtime = $fromform->sfcourseendtime;
             } else {
-                $sfcoursestarttime = 0;
-                $sfcourseendtime = 9999999999;
+                $this->sfcoursestarttime = 0;
+                $this->sfcourseendtime = 9999999999;
             }
 
             // Create the conditions params for the SQL.
             $conditionsparams = [
-                "sfcourse" => "%{$sfcourse}%",
-                "sfbookingoption" => "%{$sfbookingoption}%",
-                "sflocation" => "%{$sflocation}%",
-                "sfinstitution" => "%{$sfinstitution}%",
-                "sfcoursestarttime" => $sfcoursestarttime,
-                "sfcourseendtime" => $sfcourseendtime,
+                "sfcourse" => "%{$this->sfcourse}%",
+                "sfbookingoption" => "%{$this->sfbookingoption}%",
+                "sflocation" => "%{$this->sflocation}%",
+                "sfinstitution" => "%{$this->sfinstitution}%",
+                "sfcoursestarttime" => $this->sfcoursestarttime,
+                "sfcourseendtime" => $this->sfcourseendtime,
             ];
 
             // Get all courses where the current user is enrolled and active.
@@ -241,58 +277,45 @@ class block_booking extends block_base {
         // If no form data can be fetched an empty object will be returned.
         $sqldata = new stdClass();
 
-        // Process the form data after submit button has been pressed.
-        if ($fromform = $this->searchform->get_data()) {
-            $sfcourse = $fromform->sfcourse;
-            $sfbookingoption = $fromform->sfbookingoption;
-            $sflocation = $fromform->sflocation;
-            $sfinstitution = $fromform->sfinstitution;
+        if ($this->searchform != null) {
+            // Process the form data after submit button has been pressed.
+            if ($fromform = $this->searchform->get_data()) {
+                $this->sfcourse = $fromform->sfcourse;
+                $this->sfbookingoption = $fromform->sfbookingoption;
+                $this->sflocation = $fromform->sflocation;
+                $this->sfinstitution = $fromform->sfinstitution;
 
-            // Only use timespan from form if checkbox is active.
-            if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
-                $sfcoursestarttime = $fromform->sfcoursestarttime;
-                $sfcourseendtime = $fromform->sfcourseendtime;
-            } else {
-                $sfcoursestarttime = 0;
-                $sfcourseendtime = 9999999999;
+                // Only use timespan from form if checkbox is active.
+                if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
+                    $this->sfcoursestarttime = $fromform->sfcoursestarttime;
+                    $this->sfcourseendtime = $fromform->sfcourseendtime;
+                } else {
+                    $this->sfcoursestarttime = 0;
+                    $this->sfcourseendtime = 9999999999;
+                }
             }
-
-            // Create all parts of the SQL select query.
-            $fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
-                'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime';
-
-            $from = '{booking_options} bo LEFT JOIN {course} c ON c.id = bo.courseid LEFT JOIN (SELECT cm.id cmid, ' .
-                'cm.instance bookingid, cm.visible FROM {course_modules} cm WHERE module in (SELECT id FROM {modules} ' .
-                'WHERE name = "booking")) s1 ON bo.bookingid = s1.bookingid';
-
-            $where = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :sfbookingoption AND c.fullname like :sfcourse ' .
-                'AND bo.location like :sflocation AND bo.institution like :sfinstitution  ' .
-                'AND bo.coursestarttime >= :sfcoursestarttime AND bo.courseendtime <= :sfcourseendtime';
-
-            $params = [
-                "sfcourse" => "%{$sfcourse}%",
-                "sfbookingoption" => "%{$sfbookingoption}%",
-                "sflocation" => "%{$sflocation}%",
-                "sfinstitution" => "%{$sfinstitution}%",
-                "sfcoursestarttime" => $sfcoursestarttime,
-                "sfcourseendtime" => $sfcourseendtime,
-            ];
-
-            // Execute the query once to determine the number of results.
-            if ($count = count($DB->get_records_sql('SELECT ' . $fields . ' FROM ' . $from . ' WHERE ' . $where,
-                $params))) {
-                $sqldata->fields = $fields;
-                $sqldata->from = $from;
-                $sqldata->where = $where;
-                $sqldata->params = $params;
-            }
-            // Store count in the SQL data object.
-            $sqldata->count = $count;
-        } else {
-            // TODO: generate SQL data for table download correctly.
-            $sqldata->field = '*';
-            $sqldata->from = '{booking_options}';
         }
+
+        // Create all parts of the SQL select query.
+        $sqldata->fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
+            'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime';
+
+        $sqldata->from = '{booking_options} bo LEFT JOIN {course} c ON c.id = bo.courseid LEFT JOIN (SELECT cm.id cmid, ' .
+            'cm.instance bookingid, cm.visible FROM {course_modules} cm WHERE module in (SELECT id FROM {modules} ' .
+            'WHERE name = "booking")) s1 ON bo.bookingid = s1.bookingid';
+
+        $sqldata->where = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :sfbookingoption AND c.fullname like :sfcourse ' .
+            'AND bo.location like :sflocation AND bo.institution like :sfinstitution  ' .
+            'AND bo.coursestarttime >= :sfcoursestarttime AND bo.courseendtime <= :sfcourseendtime';
+
+        $sqldata->params = [
+            "sfcourse" => "%{$this->sfcourse}%",
+            "sfbookingoption" => "%{$this->sfbookingoption}%",
+            "sflocation" => "%{$this->sflocation}%",
+            "sfinstitution" => "%{$this->sfinstitution}%",
+            "sfcoursestarttime" => $this->sfcoursestarttime,
+            "sfcourseendtime" => $this->sfcourseendtime,
+        ];
 
         return $sqldata;
     }
