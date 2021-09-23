@@ -284,6 +284,10 @@ class block_booking extends block_base {
             }
             // Store count in the SQL data object.
             $sqldata->count = $count;
+        } else {
+            // TODO: generate SQL data for table download correctly.
+            $sqldata->field = '*';
+            $sqldata->from = '{booking_options}';
         }
 
         return $sqldata;
