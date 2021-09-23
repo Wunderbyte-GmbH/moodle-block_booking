@@ -116,11 +116,11 @@ class block_booking extends block_base {
 
             if (!empty($sqldata->count)) {
                 // TODO: How can we get download to work in a buffered table???
-                // $download = optional_param('download', '', PARAM_ALPHA);
+                $download = optional_param('download', '', PARAM_ALPHA);
 
                 $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
                 // TODO: How can we get download to work in a buffered table???
-                // $resultstable->is_downloading($download, 'test', 'testing123');
+                $resultstable->is_downloading($download, 'test', 'testing123');
                 $resultstable->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
 
                 // Write the results table to buffer and store HTML in a variable.
@@ -231,7 +231,7 @@ class block_booking extends block_base {
      * Function to process the form data and do the search for the manager table.
      * @return stdClass An object containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
      */
-    private function search_booking_options_manager_get_sqldata(): stdClass {
+    public function search_booking_options_manager_get_sqldata(): stdClass {
         global $DB;
 
         // If no form data can be fetched an empty object will be returned.
