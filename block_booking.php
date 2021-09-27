@@ -298,11 +298,29 @@ class block_booking extends block_base {
 
         // Create all parts of the SQL select query.
         $sqldata->fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
-            'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime';
+            'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
 
-        $sqldata->from = '{booking_options} bo LEFT JOIN {course} c ON c.id = bo.courseid LEFT JOIN (SELECT cm.id cmid, ' .
-            'cm.instance bookingid, cm.visible FROM {course_modules} cm WHERE module in (SELECT id FROM {modules} ' .
-            'WHERE name = "booking")) s1 ON bo.bookingid = s1.bookingid';
+        $sqldata->from = '{booking_options} bo
+            LEFT JOIN {course} c ON c.id = bo.courseid
+            LEFT JOIN (
+                SELECT cm.id cmid, cm.instance bookingid, cm.visible
+                FROM {course_modules} cm WHERE module in (
+                    SELECT id FROM {modules} WHERE name = "booking"
+                )
+            ) s1
+            ON bo.bookingid = s1.bookingid
+            LEFT JOIN (
+                SELECT ba.optionid, COUNT(ba.optionid) participants
+                FROM {booking_answers} ba
+                WHERE waitinglist = 0
+                GROUP BY ba.optionid
+            ) p ON bo.id = p.optionid
+            LEFT JOIN (
+                SELECT ba.optionid, COUNT(ba.optionid) waitinglist
+                FROM {booking_answers} ba
+                WHERE waitinglist = 1
+                GROUP BY ba.optionid
+            ) w ON bo.id = w.optionid';
 
         $sqldata->where = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :sfbookingoption AND c.fullname like :sfcourse ' .
             'AND bo.location like :sflocation AND bo.institution like :sfinstitution  ' .
