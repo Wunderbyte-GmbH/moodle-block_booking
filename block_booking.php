@@ -90,10 +90,16 @@ class block_booking extends block_base {
     public $sfcourseendtime = '';
 
     /**
+     * @var int $totalrows The number of search results (total number of rows of table) in manager view.
+     */
+    public $totalrows = -1;
+
+    /**
      * Initialize the internal variables and search form params.
      * @throws coding_exception
      */
     public function init() {
+        $this->totalrows = -1;
         $this->title   = get_string('title', 'block_booking');
     }
 
@@ -120,10 +126,12 @@ class block_booking extends block_base {
         // Set system context.
         $this->context = context_system::instance();
 
-        // Count of result rows.
-        $count = -1;
-
         if ($this->content !== null) {
+
+            /*if (!empty($resultstable) && isset($resultstable->totalrows)) {
+                $this->totalrows = -1;
+            }*/
+
             return $this->content;
         }
 
@@ -152,7 +160,7 @@ class block_booking extends block_base {
             if (!empty((array) $sqldata)) {
                 $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
 
-                $resultstable->is_downloading(false); // This is necessary to show download button.
+                $resultstable->is_downloading(false); // This is necessary to show the download button.
                 $resultstable->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
 
                 $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php",
@@ -163,17 +171,23 @@ class block_booking extends block_base {
                         'sfinstitution' => $this->sfinstitution,
                         'sfcoursestarttime' => $this->sfcoursestarttime,
                         'sfcourseendtime' => $this->sfcourseendtime,
-                    ]);
+                    ]
+                );
 
                 // Write the results table to buffer and store HTML in a variable.
                 ob_start();
                 $resultstable->define_baseurl($baseurl);
                 $resultstable->out(40, true);
-                $count = $resultstable->totalrows;
                 $resultstablehtml = ob_get_clean();
             }
 
-            $searchresultsmanager = new searchresults_manager($resultstablehtml, $count);
+            // Only set number of total rows, if at least one filter was set in the search form.
+            if (!empty($this->sfcourse) || !empty($this->sfbookingoption) || !empty($this->sflocation)
+                || !empty($this->sfinstitution) || ($this->sfcoursestarttime != 0) || ($this->sfcourseendtime != 9999999999)) {
+                $this->totalrows = $resultstable->totalrows;
+            }
+
+            $searchresultsmanager = new searchresults_manager($resultstablehtml, $this->totalrows);
             $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
 
         } else {
