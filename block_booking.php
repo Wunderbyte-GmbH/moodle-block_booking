@@ -197,6 +197,10 @@ class block_booking extends block_base {
                 $searchresultsstudent = new searchresults_student($results);
                 $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
             }
+
+            // Call JS to set pageurl. This is needed, in order not to loose course id.
+            $PAGE->requires->js('/blocks/booking/js/block_booking.js');
+            $PAGE->requires->js_init_call('setpageurlwithjs', [$PAGE->url->out()]);
         }
 
         // The search form.
