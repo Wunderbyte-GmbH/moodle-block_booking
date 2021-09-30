@@ -94,10 +94,6 @@ class block_booking extends block_base {
      * @throws coding_exception
      */
     public function init() {
-        global $PAGE;
-        // Call JS to fix modal (in Moove theme it's behind the backdrop).
-        $PAGE->requires->js_call_amd('block_booking/actions', 'movemodal');
-
         $this->title   = get_string('title', 'block_booking');
     }
 
@@ -213,6 +209,9 @@ class block_booking extends block_base {
         // Call JS to set pageurl. This is needed, in order not to loose course id.
         $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
             array($PAGE->url->out()));
+
+        // Call JS to fix modal (in Moove theme it's behind the backdrop).
+        $PAGE->requires->js_call_amd('block_booking/actions', 'fixmodal');
 
         return $this->content;
     }

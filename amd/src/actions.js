@@ -16,7 +16,7 @@
 /**
  * JS helper functions for the Bookings Quickfinder block.
  *
- * @module     block_booking/js
+ * @module     block_booking/actions
  * @package    block_booking
  * @copyright  2021 Wunderbyte GmbH <info@wunderbyte.at>
  * @author     Bernhard Fischer
@@ -39,28 +39,22 @@ export const setpageurlwithjs = (pageurl) => {
 };
 
 /**
- * Helper function to fix broken modal (behind backdrop) and move it to the end of the DOM
+ * Helper function to fix broken modal (behind backdrop) in "Moove" theme.
+ * => Move modal to the end of the DOM (last child of body), so it will be before the backdrop again.
  */
-export const movemodal = () => {
-
+export const fixmodal = () => {
     if (document.readyState !== 'loading') {
-        const modal = document.getElementById('booking-block-modal');
-        alert(modal);
+        movemodal();
     } else {
-        alert('attaching event listener');
         document.addEventListener('DOMContentLoaded', function() {
-            alert('triggered by event listener');
+            movemodal();
         }, false);
     }
 
-    // function myInitCode() {}
-
-
-
-    // const modal = document.getElementById('booking-block-modal');
-    // alert('hello');
-
-    //alert(modal);
-    //document.body.appendChild();
-
+    function movemodal() {
+        let modal = document.getElementById('booking-block-modal');
+        if (modal !== null) {
+            document.body.appendChild(modal);
+        }
+    }
 };
