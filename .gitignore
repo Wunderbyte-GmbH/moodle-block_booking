@@ -1,2 +1,6 @@
 .DS_Store
 .idea
+amd/node_modules
+amd/Gruntfile.js
+amd/package-lock.json
+amd/package.json
