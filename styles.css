@@ -108,3 +108,43 @@
 .block_booking .footer {
     text-align: center;
 }
+
+.block_booking #fitem_id_sfcourse {
+    margin-left: 0em;
+}
+
+.block_booking #fitem_id_sfbookingoption {
+    margin-left: 0em;
+}
+
+.block_booking #fitem_id_sfcourse label {
+    font-size: small;
+}
+
+.block_booking #fitem_id_sfbookingoption label {
+    font-size: small;
+}
+
+.block_booking #fitem_id_sflocation label {
+    font-size: small;
+}
+
+.block_booking #fitem_id_sfinstitution label {
+    font-size: small;
+}
+
+.block_booking #fitem_id_sflocation .col-form-label {
+    padding-left: 0px;
+}
+
+.block_booking #fitem_id_sfinstitution  .col-form-label {
+    padding-left: 0px;
+}
+
+.block_booking #id_sfcoursestarttime_label {
+    font-size: small;
+}
+
+.block_booking #id_sfcourseendtime_label {
+    font-size: small;
+}
