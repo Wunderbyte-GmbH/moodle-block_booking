@@ -199,7 +199,7 @@ class block_booking extends block_base {
             }
 
             // Call JS to set pageurl. This is needed, in order not to loose course id.
-            $PAGE->requires->js_call_amd('block_booking/js', 'setpageurlwithjs',
+            $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
                 array($PAGE->url->out()));
 
             //TODO: delete this: $PAGE->requires->js('/blocks/booking/amd/build/block_booking.min.js');
