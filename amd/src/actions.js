@@ -24,6 +24,10 @@
  * @since      3.0
  */
 
+/**
+ * Helper function to set correct page URL after search in block has been executed.
+ * @param pageurl
+ */
 export const setpageurlwithjs = (pageurl) => {
     const nextState = { additionalInformation: 'Updated the URL with JS' };
 
@@ -32,5 +36,31 @@ export const setpageurlwithjs = (pageurl) => {
 
     // This will replace the current entry in the browser's history, without reloading
     window.history.replaceState(nextState, '', pageurl);
-    alert('done');
+};
+
+/**
+ * Helper function to fix broken modal (behind backdrop) and move it to the end of the DOM
+ */
+export const movemodal = () => {
+
+    if (document.readyState !== 'loading') {
+        const modal = document.getElementById('booking-block-modal');
+        alert(modal);
+    } else {
+        alert('attaching event listener');
+        document.addEventListener('DOMContentLoaded', function() {
+            alert('triggered by event listener');
+        }, false);
+    }
+
+    // function myInitCode() {}
+
+
+
+    // const modal = document.getElementById('booking-block-modal');
+    // alert('hello');
+
+    //alert(modal);
+    //document.body.appendChild();
+
 };

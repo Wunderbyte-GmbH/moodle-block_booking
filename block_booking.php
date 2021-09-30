@@ -94,6 +94,10 @@ class block_booking extends block_base {
      * @throws coding_exception
      */
     public function init() {
+        global $PAGE;
+        // Call JS to fix modal (in Moove theme it's behind the backdrop).
+        $PAGE->requires->js_call_amd('block_booking/actions', 'movemodal');
+
         $this->title   = get_string('title', 'block_booking');
     }
 
@@ -197,13 +201,6 @@ class block_booking extends block_base {
                 $searchresultsstudent = new searchresults_student($results);
                 $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
             }
-
-            // Call JS to set pageurl. This is needed, in order not to loose course id.
-            $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
-                array($PAGE->url->out()));
-
-            //TODO: delete this: $PAGE->requires->js('/blocks/booking/amd/build/block_booking.min.js');
-            //TODO: delete this: $PAGE->requires->js_init_call('setpageurlwithjs', [$PAGE->url->out()]);
         }
 
         // The search form.
@@ -212,6 +209,10 @@ class block_booking extends block_base {
 
         // The footer.
         $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
+
+        // Call JS to set pageurl. This is needed, in order not to loose course id.
+        $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
+            array($PAGE->url->out()));
 
         return $this->content;
     }
