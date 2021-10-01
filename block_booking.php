@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
+
+require_login();
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once(dirname(__FILE__) . '/classes/form/search_form.php');
@@ -25,8 +29,6 @@ use block_booking\output\search_form_container;
 use block_booking\output\searchresults_manager_view;
 use block_booking\output\searchresults_student_view;
 use mod_booking\table\bookingoptions_simple_table;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Block base class.
@@ -71,7 +73,6 @@ class block_booking extends block_base {
      * @throws moodle_exception
      */
     public function get_content() {
-        global $PAGE, $CFG;
 
         // Set system context.
         $context = context_system::instance();
@@ -90,8 +91,7 @@ class block_booking extends block_base {
         $searchformhtml = ob_get_clean();
 
         // Get the renderer for this plugin.
-        $output = $PAGE->get_renderer('block_booking');
-        $nexturl = $PAGE->url->out();
+        $output = $this->page->get_renderer('block_booking');
 
         // The content.
         $this->content = new stdClass();
@@ -128,11 +128,11 @@ class block_booking extends block_base {
         $this->content->text .= $output->render_search_form_container($data);
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.
-        $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
-                array($PAGE->url->out()));
+        $this->page->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
+                array($this->page->url->out()));
 
         // Call JS to fix modal (in Moove theme it's behind the backdrop).
-        $PAGE->requires->js_call_amd('block_booking/actions', 'fixmodal');
+        $this->page->requires->js_call_amd('block_booking/actions', 'fixmodal');
 
         return $this->content;
     }
@@ -154,7 +154,7 @@ class block_booking extends block_base {
 
         // We us the prefix sf in our url to make sure we don't get mixed up in the names.
         $urlparams = [];
-        foreach($sqldata['params'] as $key => $value) {
+        foreach ($sqldata['params'] as $key => $value) {
             $urlparams["sf$key"] = $value;
         }
         $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php", $urlparams);
@@ -199,14 +199,14 @@ class block_booking extends block_base {
         // Get all courses where the current user is enrolled and active.
         $enrolledactivecoursesids = [];
         $enrolledactivecourses = enrol_get_users_courses($USER->id, true, ['id']);
-        foreach($enrolledactivecourses as $courserecord) {
+        foreach ($enrolledactivecourses as $courserecord) {
             $enrolledactivecoursesids[] = $courserecord->id;
         }
         // Get the 'in' part of the SQL.
         list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
 
         $sqldata = [];
-        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, 
+        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location,
                     bo.institution, bo.coursestarttime, bo.courseendtime";
         $sqldata['from'] = "FROM {booking_options} bo
                 LEFT JOIN {course} c

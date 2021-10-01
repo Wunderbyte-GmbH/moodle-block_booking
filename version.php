@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 $plugin->version = 2021093000; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->release = '3.0.1';
 $plugin->component = 'block_booking';
