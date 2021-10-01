@@ -28,26 +28,24 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/block_booking_table.php');
 
+$params = [];
 $download = optional_param('download', '', PARAM_ALPHA);
-$sfcourse = optional_param('sfcourse', '', PARAM_TEXT);
-$sfbookingoption = optional_param('sfbookingoption', '', PARAM_TEXT);
-$sflocation = optional_param('sflocation', '', PARAM_TEXT);
-$sfinstitution = optional_param('sfinstitution', '', PARAM_TEXT);
-$sfcoursestarttime = optional_param('sfcoursestarttime', '', PARAM_INT);
-$sfcourseendtime = optional_param('sfcourseendtime', '', PARAM_INT);
-
+//$params['course'] = optional_param('sfcourse', '', PARAM_TEXT);
+//$params['bookingoption'] = optional_param('sfbookingoption', '', PARAM_TEXT);
+//$params['location'] = optional_param('sflocation', '', PARAM_TEXT);
+//$params['institution'] = optional_param('sfinstitution', '', PARAM_TEXT);
+//$params['coursestarttime'] = optional_param('sfcoursestarttime', '', PARAM_INT);
+//$params['courseendtime'] = optional_param('sfcourseendtime', '', PARAM_INT);
+//
 $table = new bookingoptions_simple_table('block_booking_resultstable');
 
 $blockbooking = new block_booking();
-$blockbooking->sfcourse = $sfcourse;
-$blockbooking->sfbookingoption = $sfbookingoption;
-$blockbooking->sflocation = $sflocation;
-$blockbooking->sfinstitution = $sfinstitution;
-$blockbooking->sfcoursestarttime = $sfcoursestarttime;
-$blockbooking->sfcourseendtime = $sfcourseendtime;
 
-$sqldata = $blockbooking->search_booking_options_manager_get_sqldata();
+// Should be possible to get all this information via this function.
+$params = $blockbooking::get_search_params_from_form((object)$_POST);
+
+$sqldata = $blockbooking->search_booking_options_manager_get_sqldata($params);
 
 $table->is_downloading($download, 'booking_quickfinder_found_bookings');
-$table->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
+$table->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
 $table->out(40, true);
