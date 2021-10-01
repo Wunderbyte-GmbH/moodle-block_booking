@@ -39,7 +39,7 @@ use templatable;
  * @author    Bernhard Fischer
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class searchresults_manager implements renderable, templatable {
+class searchresults_manager_view implements renderable, templatable {
 
     /**
      * @var string $searchresultstablehtml The HTML of the results table.
