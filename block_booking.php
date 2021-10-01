@@ -103,8 +103,7 @@ class block_booking extends block_base {
      */
     function applicable_formats() {
         return array(
-            'my' => true,
-            'course-view' => true,
+            'all' => true,
             'course-view-social' => false
         );
     }
