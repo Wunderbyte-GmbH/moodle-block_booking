@@ -30,21 +30,13 @@ $PAGE->set_url('/block_booking_table.php');
 
 $params = [];
 $download = optional_param('download', '', PARAM_ALPHA);
-//$params['course'] = optional_param('sfcourse', '', PARAM_TEXT);
-//$params['bookingoption'] = optional_param('sfbookingoption', '', PARAM_TEXT);
-//$params['location'] = optional_param('sflocation', '', PARAM_TEXT);
-//$params['institution'] = optional_param('sfinstitution', '', PARAM_TEXT);
-//$params['coursestarttime'] = optional_param('sfcoursestarttime', '', PARAM_INT);
-//$params['courseendtime'] = optional_param('sfcourseendtime', '', PARAM_INT);
-//
-$table = new bookingoptions_simple_table('block_booking_resultstable');
 
-$blockbooking = new block_booking();
+$table = new bookingoptions_simple_table('block_booking_resultstable');
 
 // Should be possible to get all this information via this function.
 $params = $blockbooking::get_search_params_from_form((object)$_POST);
 
-$sqldata = $blockbooking->search_booking_options_manager_get_sqldata($params);
+$sqldata = $blockbooking::search_booking_options_manager_get_sqldata($params);
 
 $table->is_downloading($download, 'booking_quickfinder_found_bookings');
 $table->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);

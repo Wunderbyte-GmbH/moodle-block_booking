@@ -28,9 +28,27 @@
     * examplevariable - array: An array with values.
     * etc.
 
-    TODO:
     Example context (json):
-    <paste json here - as in mooduell/templates/viewpage.mustache>
+    {
+        "resultsarray":[
+            {
+            "optionid":"37",
+            "cmid":"104",
+            "bookingid":"19",
+            "text":"-42 - beb",
+            "courseid":"7",
+            "course":"-42",
+            "location":"",
+            "institution":"",
+            "coursestarttime":"1633180080",
+            "courseendtime":"1633208880",
+            "datestring":"2 October 2021, 3:08 pm - 2 October 2021, 11:08 pm",
+            "link":"http:\/\/localhost:8080\/moodle311\/mod\/booking\/view.php?id=104&optionid=37&action=showonlyone&whichview=showonlyone"
+            }
+        ],
+        "resultsmessage":"1 booking options found (click to show)",
+        "success":true
+    }
 }}
 {{#resultsmessage}}
     {{#success}}

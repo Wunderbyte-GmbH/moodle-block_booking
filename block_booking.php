@@ -22,8 +22,8 @@ require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
 
 use block_booking\form\search_form;
 use block_booking\output\search_form_container;
-use block_booking\output\searchresults_manager;
-use block_booking\output\searchresults_student;
+use block_booking\output\searchresults_manager_view;
+use block_booking\output\searchresults_student_view;
 use mod_booking\table\bookingoptions_simple_table;
 
 defined('MOODLE_INTERNAL') || die();
@@ -43,51 +43,6 @@ class block_booking extends block_base {
      * @var string $title The block title.
      */
     public $title = '';
-
-    /**
-     * @var stdClass|null $searchform The search form object.
-     */
-    public $searchform = null;
-
-    /**
-     * @var string $searchformhtml The code of the search form to be passed to the template.
-     */
-    public $searchformhtml = '';
-
-    /**
-     * @var string $context The system context.
-     */
-    public $context = '';
-
-    /**
-     * @var string $sfcourse Search form parameter: Course name.
-     */
-    public $sfcourse = '';
-
-    /**
-     * @var string $sfbookingoption Search form parameter: Booking option name.
-     */
-    public $sfbookingoption = '';
-
-    /**
-     * @var string $sflocation Search form parameter: Location.
-     */
-    public $sflocation = '';
-
-    /**
-     * @var string $sfinstitution Search form parameter: Institution.
-     */
-    public $sfinstitution = '';
-
-    /**
-     * @var string $sfcoursestarttime Search form parameter: Course start time.
-     */
-    public $sfcoursestarttime = '';
-
-    /**
-     * @var string $sfcourseendtime Search form parameter: Course end time.
-     */
-    public $sfcourseendtime = '';
 
     /**
      * Initialize the internal variables and search form params.
@@ -110,104 +65,71 @@ class block_booking extends block_base {
 
     /**
      * Get content.
-     * @return stdClass|null
+     * @return stdClass|stdObject|null
      * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function get_content() {
         global $PAGE, $CFG;
 
         // Set system context.
-        $this->context = context_system::instance();
+        $context = context_system::instance();
 
         if ($this->content !== null) {
             return $this->content;
         }
 
         // Initialize the search form.
-        $this->searchform = new search_form();
+        $searchform = new search_form();
 
         // Collect the search form HTML in a buffer.
         ob_start();
-        $this->searchform->display();
-        // And store it in a member variable.
-        $this->searchformhtml = ob_get_clean();
+        $searchform->display();
+        // And store it in a variable.
+        $searchformhtml = ob_get_clean();
 
         // Get the renderer for this plugin.
         $output = $PAGE->get_renderer('block_booking');
+        $nexturl = $PAGE->url->out();
 
         // The content.
         $this->content = new stdClass();
         $this->content->text = '';
 
+        $isstudent = !has_capability('block/booking:managesitebookingoptions', $context);
+
         // Process the form data after submit button has been pressed.
-        if ($fromform = $this->searchform->get_data()) {
-            $this->sfcourse = $fromform->sfcourse;
-            $this->sfbookingoption = $fromform->sfbookingoption;
-            $this->sflocation = $fromform->sflocation;
-            $this->sfinstitution = $fromform->sfinstitution;
+        if ($fromform = $searchform->get_data()) {
 
-            // Only use timespan from form if checkbox is active.
-            if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
-                $this->sfcoursestarttime = $fromform->sfcoursestarttime;
-                $this->sfcourseendtime = $fromform->sfcourseendtime;
-            } else {
-                $this->sfcoursestarttime = 0;
-                $this->sfcourseendtime = 9999999999;
-            }
+            $params = self::get_search_params_from_form($fromform);
 
-            if (has_capability('block/booking:managesitebookingoptions', $this->context)) {
-                // For managers, create search results as a table.
-                $resultstablehtml = '';
-
-                $sqldata = $this->search_booking_options_manager_get_sqldata();
-
-                if (!empty((array) $sqldata)) {
-                    $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
-
-                    $resultstable->is_downloading(false); // This is necessary to show the download button.
-                    $resultstable->set_sql($sqldata->fields, $sqldata->from, $sqldata->where, $sqldata->params);
-
-                    $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php",
-                        [
-                            'sfcourse' => $this->sfcourse,
-                            'sfbookingoption' => $this->sfbookingoption,
-                            'sflocation' => $this->sflocation,
-                            'sfinstitution' => $this->sfinstitution,
-                            'sfcoursestarttime' => $this->sfcoursestarttime,
-                            'sfcourseendtime' => $this->sfcourseendtime,
-                        ]
-                    );
-
-                    // Write the results table to buffer and store HTML in a variable.
-                    ob_start();
-                    $resultstable->define_baseurl($baseurl);
-                    $resultstable->out(40, true);
-                    $resultstablehtml = ob_get_clean();
-                }
-
-                $count = $resultstable->totalrows;
-
-                $searchresultsmanager = new searchresults_manager($resultstablehtml, $count);
-                $this->content->text .= $output->render_searchresults_manager($searchresultsmanager);
-
-            } else {
+            // create the actual table mod differently for students or teachers.
+            if ($isstudent) {
+                $sqldata = self::search_booking_options_student_get_sqldata($params);
                 // Show search results for students.
-                $results = $this->search_booking_options_student();
-                $searchresultsstudent = new searchresults_student($results);
-                $this->content->text .= $output->render_searchresults_student($searchresultsstudent);
+                $results = $this->search_booking_options_student_view($sqldata);
+                $data = new searchresults_student_view($results);
+                $this->content->text .= $output->render_searchresults_student($data);
+            } else {
+                // Execute the search.
+                $sqldata = self::search_booking_options_manager_get_sqldata($params);
+                // Return the rendered table from table lib.
+                list($resultstablehtml, $count) = $this->search_booking_options_manager_view($sqldata);
+                // Use template on table.
+                $data = new searchresults_manager_view($resultstablehtml, $count);
+                // Pass the rendered html to content->text.
+                $this->content->text .= $output->render_searchresults_manager($data);
             }
         }
 
         // The search form.
-        $searchformdata = new search_form_container($this->searchformhtml);
-        $this->content->text .= $output->render_search_form_container($searchformdata);
-
-        // The footer.
-        $this->content->footer = get_string('createdbywunderbyte', 'block_booking');
+        $data = new search_form_container($searchformhtml, $nexturl);
+        $this->content->text .= $output->render_search_form_container($data);
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.
         $PAGE->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
-            array($PAGE->url->out()));
+                array($PAGE->url->out()));
 
         // Call JS to fix modal (in Moove theme it's behind the backdrop).
         $PAGE->requires->js_call_amd('block_booking/actions', 'fixmodal');
@@ -216,23 +138,63 @@ class block_booking extends block_base {
     }
 
     /**
-     * Function to process the form data and do the search for the students view.
-     * @return array The results as an array of DB records.
+     * Execute SQL and return rendered table from table lib.
+     * @param $sqldata
+     * @return array
+     * @throws moodle_exception
+     */
+    private function search_booking_options_manager_view($sqldata):array {
+
+        global $CFG;
+
+        $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
+
+        $resultstable->is_downloading(false); // This is necessary to show the download button.
+        $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
+
+        // We us the prefix sf in our url to make sure we don't get mixed up in the names.
+        $urlparams = [];
+        foreach($sqldata['params'] as $key => $value) {
+            $urlparams["sf$key"] = $value;
+        }
+        $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php", $urlparams);
+
+        // Write the results table to buffer and store HTML in a variable.
+        ob_start();
+        $resultstable->define_baseurl($baseurl);
+        $resultstable->out(40, true);
+        $resultstablehtml = ob_get_clean();
+
+        $count = $resultstable->totalrows;
+
+        return [$resultstablehtml, $count];
+    }
+
+    /**
+     * Execute sql and return results array for student.
+     * @param $sqldata
+     * @return array
+     * @throws dml_exception
+     */
+    private function search_booking_options_student_view($sqldata) {
+
+        global $DB;
+        $params = array_pop($sqldata);
+        $sql = implode(' ', $sqldata);
+        $results = $DB->get_records_sql($sql, $params);
+
+        return $results;
+    }
+
+    /**
+     * Create SQL for the students view.
+     * @param $params
+     * @return array
      * @throws coding_exception
      * @throws dml_exception
      */
-    private function search_booking_options_student() {
+    private static function search_booking_options_student_get_sqldata($params):array {
         global $DB, $USER;
-
-        // Create the conditions params for the SQL.
-        $conditionsparams = [
-            "sfcourse" => "%{$this->sfcourse}%",
-            "sfbookingoption" => "%{$this->sfbookingoption}%",
-            "sflocation" => "%{$this->sflocation}%",
-            "sfinstitution" => "%{$this->sfinstitution}%",
-            "sfcoursestarttime" => $this->sfcoursestarttime,
-            "sfcourseendtime" => $this->sfcourseendtime,
-        ];
 
         // Get all courses where the current user is enrolled and active.
         $enrolledactivecoursesids = [];
@@ -243,50 +205,48 @@ class block_booking extends block_base {
         // Get the 'in' part of the SQL.
         list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
 
-        $sql = 'SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, 
-                    bo.institution, bo.coursestarttime, bo.courseendtime
-                FROM {booking_options} bo
+        $sqldata = [];
+        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location, 
+                    bo.institution, bo.coursestarttime, bo.courseendtime";
+        $sqldata['from'] = "FROM {booking_options} bo
                 LEFT JOIN {course} c
                 ON c.id = bo.courseid
                 LEFT JOIN (SELECT cm.id cmid, cm.instance bookingid, cm.visible
                 FROM {course_modules} cm
-                WHERE module in (
-                  SELECT id FROM {modules} WHERE name = "booking"
+                WHERE module = (
+                  SELECT id FROM {modules} WHERE name = 'booking'
                 )) s1
-                ON bo.bookingid = s1.bookingid
-                WHERE bo.bookingid <> 0
+                ON bo.bookingid = s1.bookingid";
+        $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
-                AND bo.text like :sfbookingoption
-                AND c.fullname like :sfcourse
-                AND bo.location like :sflocation
-                AND bo.institution like :sfinstitution
-                AND bo.coursestarttime >= :sfcoursestarttime
-                AND bo.courseendtime <= :sfcourseendtime
-                AND c.id ' . $insql;
+                AND bo.text like :bookingoption
+                AND c.fullname like :course
+                AND bo.location like :location
+                AND bo.institution like :institution
+                AND bo.coursestarttime >= :coursestarttime
+                AND bo.courseendtime <= :courseendtime
+                AND c.id $insql";
 
-        $allparams = array_merge($conditionsparams, $inparams);
+        $sqldata['params'] = array_merge($params, $inparams);
 
-        // Now let's get those search results.
-        $results = $DB->get_records_sql($sql, $allparams);
-
-        return $results;
+        return $sqldata;
     }
 
     /**
-     * Function to process the form data and do the search for the manager table.
+     * Create sql for the teachers view.
      * @return stdClass An object containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
      */
-    public function search_booking_options_manager_get_sqldata(): stdClass {
+    public static function search_booking_options_manager_get_sqldata($params): array {
         global $DB;
 
         // If no form data can be fetched an empty object will be returned.
-        $sqldata = new stdClass();
+        $sqldata = [];
 
         // Create all parts of the SQL select query.
-        $sqldata->fields = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
+        $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
             'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
 
-        $sqldata->from = '{booking_options} bo
+        $sqldata['from'] = '{booking_options} bo
             LEFT JOIN {course} c ON c.id = bo.courseid
             LEFT JOIN (
                 SELECT cm.id cmid, cm.instance bookingid, cm.visible
@@ -308,18 +268,11 @@ class block_booking extends block_base {
                 GROUP BY ba.optionid
             ) w ON bo.id = w.optionid';
 
-        $sqldata->where = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :sfbookingoption AND c.fullname like :sfcourse ' .
-            'AND bo.location like :sflocation AND bo.institution like :sfinstitution  ' .
-            'AND bo.coursestarttime >= :sfcoursestarttime AND bo.courseendtime <= :sfcourseendtime';
+        $sqldata['where'] = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course ' .
+            'AND bo.location like :location AND bo.institution like :institution  ' .
+            'AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime';
 
-        $sqldata->params = [
-            "sfcourse" => "%{$this->sfcourse}%",
-            "sfbookingoption" => "%{$this->sfbookingoption}%",
-            "sflocation" => "%{$this->sflocation}%",
-            "sfinstitution" => "%{$this->sfinstitution}%",
-            "sfcoursestarttime" => $this->sfcoursestarttime,
-            "sfcourseendtime" => $this->sfcourseendtime,
-        ];
+        $sqldata['params'] = $params;
 
         return $sqldata;
     }
@@ -330,5 +283,29 @@ class block_booking extends block_base {
      */
     public function has_config() {
         return false;
+    }
+
+    /**
+     * Gets all relevant params from form and puts them in an array.
+     * Also adds the wildcard where needed.
+     * @param object $fromform
+     * @return array
+     */
+    public static function get_search_params_from_form(object $fromform):array {
+        $params = [];
+        $params['course'] = "%$fromform->sfcourse%";
+        $params['bookingoption'] = "%$fromform->sfbookingoption%";
+        $params['location'] = "%$fromform->sflocation%";
+        $params['institution'] = "%$fromform->sfinstitution%";
+
+        // Only use timespan from form if checkbox is active.
+        if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
+            $params['coursestarttime'] = $fromform->sfcoursestarttime;
+            $params['courseendtime'] = $fromform->sfcourseendtime;
+        } else {
+            $params['coursestarttime'] = 0;
+            $params['courseendtime'] = 9999999999;
+        }
+        return $params;
     }
 }
