@@ -47,9 +47,9 @@ class renderer extends plugin_renderer_base {
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_student($data) {
+    public function render_searchresults_student($search_results_student_view) {
         $o = '';
-        $data = $data->export_for_template($this);
+        $data = $search_results_student_view->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_student', $data);
         return $o;
     }
@@ -60,9 +60,9 @@ class renderer extends plugin_renderer_base {
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_manager($data) {
+    public function render_searchresults_manager($search_results_manager_view) {
         $o = '';
-        $data = $data->export_for_template($this);
+        $data = $search_results_manager_view->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_manager', $data);
         return $o;
     }
