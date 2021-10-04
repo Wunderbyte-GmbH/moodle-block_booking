@@ -48,6 +48,6 @@ $string['sfcourseendtime'] = 'Until';
 $string['sfsearchbtn'] = 'Find bookings';
 $string['sfmorefilters'] = 'More filters...';
 
-// File: searchresults_student.mustache.
+// File: searchresults_student_view.mustache.
 $string['searchresultsfound'] = '{$a->count} booking options found (click to show)';
 $string['nosearchresults'] = 'No booking options could be found. Please try changing your filters or use less of them...';

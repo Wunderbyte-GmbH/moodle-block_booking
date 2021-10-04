@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the definition for the renderable class searchresults_student.
+ * This file contains the definition for the renderable class searchresults_student_view.
  *
  * @package   block_booking
  * @copyright 2021 Wunderbyte GmbH {@link http://www.wunderbyte.at}

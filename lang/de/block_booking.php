@@ -47,6 +47,6 @@ $string['sfcourseendtime'] = 'Bis';
 $string['sfsearchbtn'] = 'Buchungen suchen';
 $string['sfmorefilters'] = 'Weitere Filter...';
 
-// Datei: searchresults_student.mustache.
+// Datei: searchresults_student_view.mustache.
 $string['searchresultsfound'] = '{$a->count} Buchungsoptionen gefunden (zum Anzeigen anklicken)';
 $string['nosearchresults'] = 'Es konnten keine Buchungsoptionen gefunden werden. Bitte probieren Sie es mit anderen (oder weniger) Filtern noch einmal...';

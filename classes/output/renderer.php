@@ -42,28 +42,28 @@ class renderer extends plugin_renderer_base {
     }
 
     /**
-     * Render function for searchresults_student template.
+     * Render function for searchresults_student_view template.
      * @param $data array
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_student($searchresultsstudentview) {
+    public function render_searchresults_student_view($searchresultsstudentview) {
         $o = '';
         $data = $searchresultsstudentview->export_for_template($this);
-        $o .= $this->render_from_template('block_booking/searchresults_student', $data);
+        $o .= $this->render_from_template('block_booking/searchresults_student_view', $data);
         return $o;
     }
 
     /**
-     * Render function for searchresults_manager template.
+     * Render function for searchresults_manager_view template.
      * @param $data array
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_manager($searchresultsmanagerview) {
+    public function render_searchresults_manager_view($searchresultsmanagerview) {
         $o = '';
         $data = $searchresultsmanagerview->export_for_template($this);
-        $o .= $this->render_from_template('block_booking/searchresults_manager', $data);
+        $o .= $this->render_from_template('block_booking/searchresults_manager_view', $data);
         return $o;
     }
 }

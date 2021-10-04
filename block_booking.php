@@ -110,7 +110,7 @@ class block_booking extends block_base {
                 // Show search results for students.
                 $results = $this->search_booking_options_student_view($sqldata);
                 $data = new searchresults_student_view($results);
-                $this->content->text .= $output->render_searchresults_student($data);
+                $this->content->text .= $output->render_searchresults_student_view($data);
             } else {
                 // Execute the search.
                 $sqldata = self::search_booking_options_manager_get_sqldata($params);
@@ -119,12 +119,12 @@ class block_booking extends block_base {
                 // Use template on table.
                 $data = new searchresults_manager_view($resultstablehtml, $count);
                 // Pass the rendered html to content->text.
-                $this->content->text .= $output->render_searchresults_manager($data);
+                $this->content->text .= $output->render_searchresults_manager_view($data);
             }
         }
 
         // The search form.
-        $data = new search_form_container($searchformhtml, $nexturl);
+        $data = new search_form_container($searchformhtml);
         $this->content->text .= $output->render_search_form_container($data);
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.

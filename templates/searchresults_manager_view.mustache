@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_booking/searchresults_student
+    @template block_booking/searchresults_manager_view
 
     Classes required for JS:
     * none
@@ -30,24 +30,9 @@
 
     Example context (json):
     {
-        "resultsarray":[
-            {
-            "optionid":"37",
-            "cmid":"104",
-            "bookingid":"19",
-            "text":"-42 - beb",
-            "courseid":"7",
-            "course":"-42",
-            "location":"",
-            "institution":"",
-            "coursestarttime":"1633180080",
-            "courseendtime":"1633208880",
-            "datestring":"2 October 2021, 3:08 pm - 2 October 2021, 11:08 pm",
-            "link":"http:\/\/localhost:8080\/moodle311\/mod\/booking\/view.php?id=104&optionid=37&action=showonlyone&whichview=showonlyone"
-            }
-        ],
-        "resultsmessage":"1 booking options found (click to show)",
-        "success":true
+    "searchresultstablehtml" : "<table></table",
+    "resultsmessage" : "1 booking options found (click to show)",
+    "success":true
     }
 }}
 {{#resultsmessage}}
@@ -75,24 +60,8 @@
             </div>
             <div class="modal-body">
                 <!-- The actual content goes here. -->
-                <div class="list-group">
-                    {{#results}}
-                        <a href="{{link}}" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{text}}</h5>
-                                <small>{{#str}} sfcourse, block_booking {{/str}}: {{course}}</small>
-                            </div>
-                            {{#datestring}}
-                                <p class="mb-1">{{datestring}}</p>
-                            {{/datestring}}
-                            {{#location}}
-                                <small>{{#str}} sflocation, block_booking {{/str}}: {{location}}</small>
-                            {{/location}}
-                            {{#institution}}
-                                <small>{{#str}} sfinstitution, block_booking {{/str}}: {{institution}}</small>
-                            {{/institution}}
-                        </a>
-                    {{/results}}
+                <div id="block-booking-table-results">
+                    {{{searchresultstablehtml}}}
                 </div>
             </div>
             <div class="modal-footer">
