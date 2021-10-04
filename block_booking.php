@@ -206,11 +206,13 @@ class block_booking extends block_base {
         list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
 
         $sqldata = [];
-        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, bo.location,
-                    bo.institution, bo.coursestarttime, bo.courseendtime";
+        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
+            c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime";
         $sqldata['from'] = "FROM {booking_options} bo
+                LEFT JOIN {booking} b
+                ON b.id = bo.bookingid
                 LEFT JOIN {course} c
-                ON c.id = bo.courseid
+                ON c.id = b.course
                 LEFT JOIN (SELECT cm.id cmid, cm.instance bookingid, cm.visible
                 FROM {course_modules} cm
                 WHERE module = (
@@ -243,11 +245,14 @@ class block_booking extends block_base {
         $sqldata = [];
 
         // Create all parts of the SQL select query.
-        $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, c.id courseid, c.fullname course, ' .
+        $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
             'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
 
         $sqldata['from'] = '{booking_options} bo
-            LEFT JOIN {course} c ON c.id = bo.courseid
+            LEFT JOIN {booking} b
+            ON b.id = bo.bookingid
+            LEFT JOIN {course} c
+            ON c.id = b.course
             LEFT JOIN (
                 SELECT cm.id cmid, cm.instance bookingid, cm.visible
                 FROM {course_modules} cm WHERE module in (
