@@ -248,7 +248,7 @@ class block_booking extends block_base {
         $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
             'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
 
-        $sqldata['from'] = '{booking_options} bo
+        $sqldata['from'] = "{booking_options} bo
             LEFT JOIN {booking} b
             ON b.id = bo.bookingid
             LEFT JOIN {course} c
@@ -256,7 +256,7 @@ class block_booking extends block_base {
             LEFT JOIN (
                 SELECT cm.id cmid, cm.instance bookingid, cm.visible
                 FROM {course_modules} cm WHERE module in (
-                    SELECT id FROM {modules} WHERE name = "booking"
+                    SELECT id FROM {modules} WHERE name = 'booking'
                 )
             ) s1
             ON bo.bookingid = s1.bookingid
@@ -271,7 +271,7 @@ class block_booking extends block_base {
                 FROM {booking_answers} ba
                 WHERE waitinglist = 1
                 GROUP BY ba.optionid
-            ) w ON bo.id = w.optionid';
+            ) w ON bo.id = w.optionid";
 
         $sqldata['where'] = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course ' .
             'AND bo.location like :location AND bo.institution like :institution  ' .
