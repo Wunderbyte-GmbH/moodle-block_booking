@@ -1,42 +1,41 @@
 #booking-block-modal .modal {
     position: fixed;
-    top: 40px !important;
-    right: 40px !important;
-    bottom: 40px !important;
-    left: 40px !important;
+    top: 40px;
+    right: 40px;
+    bottom: 40px;
+    left: 40px;
     overflow: hidden;
 }
 
 #booking-block-modal .modal-dialog {
     position: fixed;
-    top: 40px !important;
-    left: 40px !important;
-    right: 40px !important;
-    bottom: 40px !important;
-    width: 100% !important;
-    height: 100% !important;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+    width: 100%;
+    height: 100%;
 }
 
 #booking-block-modal .modal-content {
     position: fixed;
-    background-color: rgba(255, 255, 255, 0) !important;
-    top: 40px !important;
-    left: 40px !important;
-    right: 40px !important;
-    bottom: 40px !important;
-    width: 100% !important;
-    height: auto !important;
+    background-color: rgba(255, 255, 255, 0);
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+    width: 100%;
+    height: auto;
 }
 
 #booking-block-modal .modal-header {
-    position: fixed !important;
-    top: 40px !important;
-    right: 40px !important;
-    left: 40px !important;
-    height: 50px !important;
-    padding: 10px !important;
-    background: #263683 !important;
-    border: 0 !important;
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    left: 40px;
+    height: 50px;
+    padding: 10px;
+    border: 0;
 }
 
 #booking-block-modal .modal-title {
@@ -47,30 +46,29 @@
 }
 
 #booking-block-modal .modal-body {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    position: fixed !important;
-    top: 90px !important;
-    bottom: 90px !important;
-    right: 40px !important;
-    left: 40px !important;
-    height: auto !important;
-    overflow: auto !important;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: fixed;
+    top: 90px;
+    bottom: 90px;
+    right: 40px;
+    left: 40px;
+    height: auto;
+    overflow: auto;
 }
 
 #booking-block-modal .modal-footer {
-    position: fixed !important;
-    bottom: 40px !important;
-    right: 40px !important;
-    left: 40px !important;
-    height: 50px !important;
-    padding: 5px !important;
-    background: #263683 !important;
-    opacity: 0.8 !important;
-    border: 0 !important;
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    left: 40px;
+    height: 50px;
+    padding: 5px;
+    opacity: 0.8;
+    border: 0;
 }
 
 #booking-block-modal .btn-closex {
-    background-color: #FFFFFF;
+    background-color: #fff;
     font-weight: bold;
     height: 32px;
     width: 30px;
@@ -86,7 +84,7 @@
     background-color: white;
 }
 
-#booking-block-modal .table .header a{
+#booking-block-modal .table .header a {
     cursor: default;
     pointer-events: none;
     text-decoration: none;
@@ -98,11 +96,11 @@
 }
 
 .block_booking #id_sfmorefilters a.fheader {
-    font-size:1rem !important;
+    font-size: 1rem;
 }
 
 .block_booking .alert-primary {
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
 .block_booking .footer {
@@ -110,11 +108,11 @@
 }
 
 .block_booking #fitem_id_sfcourse {
-    margin-left: 0em;
+    margin-left: 0;
 }
 
 .block_booking #fitem_id_sfbookingoption {
-    margin-left: 0em;
+    margin-left: 0;
 }
 
 .block_booking #fitem_id_sfcourse label {
@@ -134,11 +132,11 @@
 }
 
 .block_booking #fitem_id_sflocation .col-form-label {
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .block_booking #fitem_id_sfinstitution  .col-form-label {
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .block_booking #id_sfcoursestarttime_label {

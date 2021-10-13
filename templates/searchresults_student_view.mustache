@@ -69,7 +69,7 @@
      aria-labelledby="bookingBlockModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary">
                 <h5 class="modal-title" id="bookingBlockModalLabel">{{#str}} title, block_booking {{/str}}</h5>
                 <button type="button" class="btn btn-closex" data-dismiss="modal">X</button>
             </div>
@@ -80,7 +80,7 @@
                         <a href="{{link}}" class="list-group-item list-group-item-action flex-column align-items-start">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{text}}</h5>
-                                <small>{{#str}} sfcourse, block_booking {{/str}}: {{course}}</small>
+                                <p class="mb-1">{{#str}} sfcourse, block_booking {{/str}}: {{course}}</p>
                             </div>
                             {{#datestring}}
                                 <p class="mb-1">{{datestring}}</p>
@@ -95,8 +95,8 @@
                     {{/results}}
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <div class="modal-footer  bg-primary">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

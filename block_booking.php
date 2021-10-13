@@ -152,7 +152,7 @@ class block_booking extends block_base {
         $resultstable->is_downloading(false); // This is necessary to show the download button.
         $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
 
-        // We us the prefix sf in our url to make sure we don't get mixed up in the names.
+        // We use the prefix sf in our url to make sure we don't get mixed up in the names.
         $urlparams = [];
         foreach ($sqldata['params'] as $key => $value) {
             $urlparams["sf$key"] = $value;
