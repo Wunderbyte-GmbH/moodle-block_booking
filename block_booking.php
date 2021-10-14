@@ -303,15 +303,21 @@ class block_booking extends block_base {
         $params['location'] = "%$fromform->sflocation%";
         $params['institution'] = "%$fromform->sfinstitution%";
 
-        // Only use timespan from form if checkbox is active.
-        if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
+        // Only use from-date if checkbox is active.
+        if (isset($fromform->sffromcheckbox) && $fromform->sffromcheckbox == 1) {
             $params['coursestarttime'] = $fromform->sfcoursestarttime;
+        } else {
+            $params['coursestarttime'] = 0;
+        }
+
+        // Only use until-date if checkbox is active.
+        if (isset($fromform->sfuntilcheckbox) && $fromform->sfuntilcheckbox == 1) {
             // As courseendtime is set to time 00:00, we just add one day.
             $params['courseendtime'] = strtotime('+1 day', $fromform->sfcourseendtime);
         } else {
-            $params['coursestarttime'] = 0;
             $params['courseendtime'] = 9999999999;
         }
+
         return $params;
     }
 }
