@@ -58,7 +58,7 @@ class block_booking extends block_base {
      * All formats are allowed for the block.
      * @return bool[]
      */
-    function applicable_formats() {
+    public function applicable_formats() {
         return array(
             'all' => true,
             'course-view-social' => false
@@ -104,7 +104,7 @@ class block_booking extends block_base {
 
             $params = self::get_search_params_from_form($fromform);
 
-            // create the actual table mod differently for students or teachers.
+            // Create the actual table mod differently for students or teachers.
             if ($isstudent) {
                 $sqldata = self::search_booking_options_student_get_sqldata($params);
                 // Show search results for students.
@@ -306,7 +306,8 @@ class block_booking extends block_base {
         // Only use timespan from form if checkbox is active.
         if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {
             $params['coursestarttime'] = $fromform->sfcoursestarttime;
-            $params['courseendtime'] = $fromform->sfcourseendtime;
+            // As courseendtime is set to time 00:00, we just add one day.
+            $params['courseendtime'] = strtotime('+1 day', $fromform->sfcourseendtime);
         } else {
             $params['coursestarttime'] = 0;
             $params['courseendtime'] = 9999999999;
