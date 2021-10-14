@@ -127,15 +127,7 @@
     font-size: small;
 }
 
-.block_booking #fitem_id_sfinstitution label {
-    font-size: small;
-}
-
 .block_booking #fitem_id_sflocation .col-form-label {
-    padding-left: 0;
-}
-
-.block_booking #fitem_id_sfinstitution  .col-form-label {
     padding-left: 0;
 }
 

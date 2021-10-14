@@ -207,7 +207,7 @@ class block_booking extends block_base {
 
         $sqldata = [];
         $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
-            c.fullname course, bo.location, bo.institution, bo.coursestarttime, bo.courseendtime";
+            c.fullname course, bo.location, bo.coursestarttime, bo.courseendtime";
         $sqldata['from'] = "FROM {booking_options} bo
                 LEFT JOIN {booking} b
                 ON b.id = bo.bookingid
@@ -224,7 +224,6 @@ class block_booking extends block_base {
                 AND bo.text like :bookingoption
                 AND c.fullname like :course
                 AND bo.location like :location
-                AND bo.institution like :institution
                 AND bo.coursestarttime >= :coursestarttime
                 AND bo.courseendtime <= :courseendtime
                 AND c.id $insql";
@@ -246,7 +245,7 @@ class block_booking extends block_base {
 
         // Create all parts of the SQL select query.
         $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
-            'bo.location, bo.institution, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
+            'bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
 
         $sqldata['from'] = "{booking_options} bo
             LEFT JOIN {booking} b
@@ -274,7 +273,7 @@ class block_booking extends block_base {
             ) w ON bo.id = w.optionid";
 
         $sqldata['where'] = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course ' .
-            'AND bo.location like :location AND bo.institution like :institution  ' .
+            'AND bo.location like :location  ' .
             'AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime';
 
         $sqldata['params'] = $params;
@@ -301,7 +300,6 @@ class block_booking extends block_base {
         $params['course'] = "%$fromform->sfcourse%";
         $params['bookingoption'] = "%$fromform->sfbookingoption%";
         $params['location'] = "%$fromform->sflocation%";
-        $params['institution'] = "%$fromform->sfinstitution%";
 
         // Only use timespan from form if checkbox is active.
         if (isset($fromform->sftimespancheckbox) && $fromform->sftimespancheckbox == 1) {

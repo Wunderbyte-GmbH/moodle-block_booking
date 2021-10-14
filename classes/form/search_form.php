@@ -68,9 +68,6 @@ class search_form extends moodleform {
         $mform->addElement('text', 'sflocation', get_string('sflocation', 'block_booking'));
         $mform->setType('sflocation', PARAM_TEXT);
 
-        $mform->addElement('text', 'sfinstitution', get_string('sfinstitution', 'block_booking'));
-        $mform->setType('sfinstitution', PARAM_TEXT);
-
         $mform->addElement('checkbox', 'sftimespancheckbox', get_string('sftimespancheckbox', 'block_booking'));
 
         $mform->addElement('date_selector', 'sfcoursestarttime', get_string('sfcoursestarttime', 'block_booking'));
