@@ -40,7 +40,8 @@ $string['createdbywunderbyte'] = 'Entwickelt mit &#128156; &nbsp;von <a href="ht
 $string['sfcourse'] = 'Kurs';
 $string['sfbookingoption'] = 'Buchungsoption';
 $string['sflocation'] = 'Ort';
-$string['sftimespancheckbox'] = 'Innerhalb von bestimmtem Zeitraum suchen...';
+$string['sffromcheckbox'] = 'Ab Datum suchen...';
+$string['sfuntilcheckbox'] = 'Bis zu Datum suchen...';
 $string['sfcoursestarttime'] = 'Von';
 $string['sfcourseendtime'] = 'Bis';
 $string['sfsearchbtn'] = 'Buchungen suchen';
