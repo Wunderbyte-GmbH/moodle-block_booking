@@ -26,7 +26,10 @@ namespace block_booking\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use coding_exception;
+use dml_exception;
 use mod_booking\booking_utils;
+use moodle_exception;
 use moodle_url;
 use renderer_base;
 use renderable;
@@ -60,8 +63,11 @@ class searchresults_student_view implements renderable, templatable {
     /**
      * Constructor to prepare the data for the search results.
      * @param array $results An array containing the search results.
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
-    public function __construct($results) {
+    public function __construct(array $results) {
 
         global $CFG;
 
@@ -87,21 +93,27 @@ class searchresults_student_view implements renderable, templatable {
             // Use html_entity_decode to convert "&amp;" to a simple "&" character.
             $objectentry->link = html_entity_decode($link->out());
 
+            // Check if user is already booked or on waiting list.
+            if (isset($objectentry->waitinglist)) {
+                switch ($objectentry->waitinglist) {
+                    case 0:
+                        unset($objectentry->waitinglist);
+                        $objectentry->booked = true;
+                        break;
+                    case 1:
+                        $objectentry->waitinglist = true;
+                        break;
+                }
+            }
+
             // Convert to array, otherwise the mustache template won't work.
             $this->resultsarray[] = (array) $objectentry;
         }
 
-        if ($results === null) {
-            $count = -1; // On initializing.
-        } else {
-            // Count the results.
-            $count = count($this->resultsarray);
-        }
+        // Count the results.
+        $count = count($this->resultsarray);
 
-        if ($count === -1) {
-            $this->resultsmessage = '';
-            $this->success = false;
-        } else if ($count === 0) {
+        if ($count === 0) {
             $this->resultsmessage = get_string('nosearchresults', 'block_booking');
             $this->success = false;
         } else {

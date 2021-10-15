@@ -33,7 +33,6 @@ $string['booking:myaddinstance'] = 'Add Bookings Quickfinder block to Dashboard'
 $string['booking:viewallbookings'] = 'Overview of all bookings';
 $string['booking:managesitebookingoptions'] = 'Manage all booking options on the whole site';
 
-
 // File: block_booking.php.
 $string['createdbywunderbyte'] = 'Developed with &#128156; &nbsp;by <a href="https:www.wunderbyte.at">Wunderbyte</a>';
 
@@ -52,3 +51,5 @@ $string['sfmorefilters'] = 'More filters...';
 // File: searchresults_student_view.mustache.
 $string['searchresultsfound'] = '{$a->count} booking options found (click to show)';
 $string['nosearchresults'] = 'No booking options could be found. Please try changing your filters or use less of them...';
+$string['booked'] = 'You have booked this option.';
+$string['onwaitinglist'] = 'You are on the waiting list.';

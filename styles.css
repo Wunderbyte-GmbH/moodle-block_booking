@@ -95,6 +95,20 @@
     display: none;
 }
 
+#booking-block-modal .bqf-info-booked {
+    position: absolute;
+    top: 37px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#booking-block-modal .bqf-info-waitinglist {
+    position: absolute;
+    top: 37px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 .block_booking #id_sfmorefilters a.fheader {
     font-size: 1rem;
 }
