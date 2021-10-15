@@ -44,7 +44,7 @@ class search_form extends moodleform {
      * Defines the form fields.
      */
     public function definition() {
-        global $COURSE;
+        global $DB;
 
         $mform = $this->_form;
 
@@ -65,7 +65,19 @@ class search_form extends moodleform {
         $mform->setType('sfmorefilters', PARAM_TEXT);
         $mform->setExpanded('sfmorefilters', false);
 
-        $mform->addElement('text', 'sflocation', get_string('sflocation', 'block_booking'));
+        // First entry is selected by default, so let's make it empty.
+        $locations = ['' => ''];
+        // Get all locations from DB.
+        $locationssql = "SELECT DISTINCT location from {booking_options}";
+        if ($records = $DB->get_records_sql($locationssql)) {
+            // Add every location to the array (both as key and value so autocomplete will work).
+            foreach ($records as $record) {
+                $locations[$record->location] = $record->location;
+            }
+        }
+        $options = ['tags' => true];
+        $mform->addElement('autocomplete', 'sflocation', get_string('sflocation', 'block_booking'),
+            $locations, $options);
         $mform->setType('sflocation', PARAM_TEXT);
 
         $mform->addElement('checkbox', 'sffromcheckbox', get_string('sffromcheckbox', 'block_booking'));
