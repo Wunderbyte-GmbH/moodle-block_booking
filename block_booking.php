@@ -177,13 +177,10 @@ class block_booking extends block_base {
      * @throws dml_exception
      */
     private function search_booking_options_student_view($sqldata) {
-
         global $DB;
         $params = array_pop($sqldata);
         $sql = implode(' ', $sqldata);
-        $results = $DB->get_records_sql($sql, $params);
-
-        return $results;
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**
@@ -207,7 +204,7 @@ class block_booking extends block_base {
 
         $sqldata = [];
         $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
-            c.fullname course, bo.location, bo.coursestarttime, bo.courseendtime";
+            c.fullname course, bo.location, bo.coursestarttime, bo.courseendtime, ba.waitinglist";
         $sqldata['from'] = "FROM {booking_options} bo
                 LEFT JOIN {booking} b
                 ON b.id = bo.bookingid
@@ -218,7 +215,11 @@ class block_booking extends block_base {
                 WHERE module = (
                   SELECT id FROM {modules} WHERE name = 'booking'
                 )) s1
-                ON bo.bookingid = s1.bookingid";
+                ON bo.bookingid = s1.bookingid
+                LEFT JOIN (SELECT id, optionid, completed, waitinglist
+                FROM {booking_answers}
+                WHERE userid = :userid) ba
+                ON ba.optionid = bo.id";
         $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
                 AND bo.text like :bookingoption
@@ -296,7 +297,10 @@ class block_booking extends block_base {
      * @return array
      */
     public static function get_search_params_from_form(object $fromform):array {
+        global $USER;
+
         $params = [];
+        $params['userid'] = $USER->id;
         $params['course'] = "%$fromform->sfcourse%";
         $params['bookingoption'] = "%$fromform->sfbookingoption%";
         $params['location'] = "%$fromform->sflocation%";

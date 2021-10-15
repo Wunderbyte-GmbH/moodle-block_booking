@@ -87,6 +87,14 @@
                             {{#location}}
                                 <small>{{#str}} sflocation, block_booking {{/str}}: {{location}}</small>
                             {{/location}}
+                            <div class="d-flex w-100 justify-content-end">
+                                {{#booked}}
+                                    <div class="btn alert-success bqf-info-booked">{{#str}} booked, block_booking {{/str}}</div>
+                                {{/booked}}
+                                {{#waitinglist}}
+                                    <div class="btn alert-info bqf-info-waitinglist">{{#str}} onwaitinglist, block_booking {{/str}}</div>
+                                {{/waitinglist}}
+                            </div>
                         </a>
                     {{/results}}
                 </div>
