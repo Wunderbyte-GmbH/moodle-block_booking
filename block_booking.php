@@ -145,7 +145,7 @@ class block_booking extends block_base {
      */
     private function search_booking_options_manager_view($sqldata):array {
 
-        global $CFG;
+        global $CFG, $DB;
 
         $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
 
@@ -180,7 +180,11 @@ class block_booking extends block_base {
         $resultstable->out(40, true);
         $resultstablehtml = ob_get_clean();
 
-        $count = $resultstable->totalrows;
+        $sql = 'SELECT ' . $sqldata['fields'] . ' FROM ' . $sqldata['from'] . ' WHERE '. $sqldata['where'];
+
+        $records = $DB->get_records_sql($sql, $sqldata['params']);
+
+        $count = count($records);
 
         return [$resultstablehtml, $count];
     }
