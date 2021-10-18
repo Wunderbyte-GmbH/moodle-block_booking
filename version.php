@@ -26,12 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021101500; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = '3.0.3';
+$plugin->version = 2021101800; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = '3.0.4';
 $plugin->component = 'block_booking';
 $plugin->cron = 0;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2019111800;
 $plugin->dependencies = array(
-                'mod_booking' => 2021101500
+                'mod_booking' => 2021101800
 );
