@@ -149,6 +149,27 @@ class block_booking extends block_base {
 
         $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
 
+        // Define the list of columns to show.
+        $columns = [
+            'text', 'course', 'coursestarttime', 'courseendtime', 'location', 'participants',
+            'waitinglist', 'manageresponses', 'link'
+        ];
+        $resultstable->define_columns($columns);
+
+        // Define the titles of columns to show in header.
+        $headers = [
+            get_string('bsttext', 'mod_booking'),
+            get_string('bstcourse', 'mod_booking'),
+            get_string('bstcoursestarttime', 'mod_booking'),
+            get_string('bstcourseendtime', 'mod_booking'),
+            get_string('bstlocation', 'mod_booking'),
+            get_string('bstparticipants', 'mod_booking'),
+            get_string('bstwaitinglist', 'mod_booking'),
+            get_string('bstmanageresponses', 'mod_booking'),
+            get_string('bstlink', 'mod_booking')
+        ];
+        $resultstable->define_headers($headers);
+
         $resultstable->is_downloading(false); // This is necessary to show the download button.
         $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
 
