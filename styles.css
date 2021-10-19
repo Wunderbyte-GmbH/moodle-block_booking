@@ -85,14 +85,7 @@
 }
 
 #booking-block-modal .table .header a {
-    cursor: default;
-    pointer-events: none;
-    text-decoration: none;
     color: black;
-}
-
-#booking-block-modal .fa-minus {
-    display: none;
 }
 
 #booking-block-modal .bqf-info-booked {
@@ -165,34 +158,34 @@
     padding-bottom: 10px;
 }
 
-.block_booking #fitem_id_sfcoursestarttime .col-form-label{
+.block_booking #fitem_id_sfcoursestarttime .col-form-label {
     position: absolute;
     padding-left: 0;
     top: -25px;
     font-size: small;
 }
 
-.block_booking #fitem_id_sfcourseendtime .col-form-label{
+.block_booking #fitem_id_sfcourseendtime .col-form-label {
     position: absolute;
     padding-left: 0;
     top: -25px;
     font-size: small;
 }
 
-.block_booking #fitem_id_sfcoursestarttime .align-items-start{
+.block_booking #fitem_id_sfcoursestarttime .align-items-start {
     padding-left: 0;
 }
 
-.block_booking #fitem_id_sfcourseendtime .align-items-start{
+.block_booking #fitem_id_sfcourseendtime .align-items-start {
     padding-left: 0;
 }
 
-.block_booking #fitem_id_sfcoursestarttime .custom-select{
+.block_booking #fitem_id_sfcoursestarttime .custom-select {
     padding-left: 8px;
     padding-right: 20px;
 }
 
-.block_booking #fitem_id_sfcourseendtime .custom-select{
+.block_booking #fitem_id_sfcourseendtime .custom-select {
     padding-left: 8px;
     padding-right: 20px;
 }
