@@ -16,10 +16,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . '/../../config.php');
-
-require_login();
-
 use block_booking\form\search_form;
 use block_booking\output\search_form_container;
 use block_booking\output\searchresults_manager_view;
