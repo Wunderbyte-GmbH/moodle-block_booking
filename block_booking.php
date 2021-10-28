@@ -16,13 +16,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-global $CFG;
+require_once(dirname(__FILE__) . '/../../config.php');
 
 require_login();
-
-require_once(dirname(__FILE__) . '/../../config.php');
-require_once(dirname(__FILE__) . '/classes/form/search_form.php');
-require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
 
 use block_booking\form\search_form;
 use block_booking\output\search_form_container;
