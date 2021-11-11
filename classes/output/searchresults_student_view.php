@@ -115,9 +115,11 @@ class searchresults_student_view implements renderable, templatable {
 
         if ($count === 0) {
             $this->resultsmessage = get_string('nosearchresults', 'block_booking');
+            $this->title = get_string('title', 'block_booking');
             $this->success = false;
         } else {
             $this->resultsmessage = get_string('searchresultsfound', 'block_booking', ['count' => $count]);
+            $this->title = get_string('modalheadertitle', 'block_booking', ['count' => $count]);
             $this->success = true;
         }
     }
@@ -130,7 +132,8 @@ class searchresults_student_view implements renderable, templatable {
         return array(
             'results' => $this->resultsarray,
             'success' => $this->success,
-            'resultsmessage' => $this->resultsmessage
+            'resultsmessage' => $this->resultsmessage,
+            'title' => $this->title
         );
     }
 }

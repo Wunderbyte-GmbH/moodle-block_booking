@@ -52,3 +52,4 @@ $string['searchresultsfound'] = '{$a->count} booking options found (click to sho
 $string['nosearchresults'] = 'No booking options could be found. Please try changing your filters or use less of them...';
 $string['booked'] = 'You have booked this option.';
 $string['onwaitinglist'] = 'You are on the waiting list.';
+$string['modalheadertitle'] = '{$a->count} booking options found';
