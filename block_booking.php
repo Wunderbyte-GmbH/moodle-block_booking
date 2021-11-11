@@ -234,9 +234,9 @@ class block_booking extends block_base {
         $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
                 AND bo.text like :bookingoption
-                AND c.fullname like :course
-                AND bo.location like :location
-                AND bo.coursestarttime >= :coursestarttime
+                AND c.fullname like :course" .
+                self::generate_in_locations_sql($params['locationsarray']) .
+                "AND bo.coursestarttime >= :coursestarttime
                 AND bo.courseendtime <= :courseendtime
                 AND c.id $insql";
 
@@ -250,14 +250,13 @@ class block_booking extends block_base {
      * @return stdClass An object containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
      */
     public static function search_booking_options_manager_get_sqldata($params): array {
-        global $DB;
 
         // If no form data can be fetched an empty object will be returned.
         $sqldata = [];
 
         // Create all parts of the SQL select query.
-        $sqldata['fields'] = 'bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
-            'bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist';
+        $sqldata['fields'] = "bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
+            'bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist";
 
         $sqldata['from'] = "{booking_options} bo
             LEFT JOIN {booking} b
@@ -284,13 +283,31 @@ class block_booking extends block_base {
                 GROUP BY ba.optionid
             ) w ON bo.id = w.optionid";
 
-        $sqldata['where'] = 'bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course ' .
-            'AND bo.location like :location  ' .
-            'AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime';
+        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course " .
+            self::generate_in_locations_sql($params['locationsarray']) .
+            "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime";
 
         $sqldata['params'] = $params;
 
         return $sqldata;
+    }
+
+    /**
+     * Helper function to generate the "AND bo.location in ('location1', 'location2',...)" SQL part.
+     *
+     * @param array $locationsarray an array of location strings
+     * @return string the SQL part needed (empty string if array is empty)
+     */
+    private static function generate_in_locations_sql(array $locationsarray): string {
+
+        // Generate the locations SQL part.
+        if (!empty($locationsarray)) {
+            $inlocationssql = "AND bo.location IN ('" . implode("', '", $locationsarray) . "')";
+        } else {
+            $inlocationssql = "";
+        }
+
+        return $inlocationssql;
     }
 
     /**
@@ -314,7 +331,7 @@ class block_booking extends block_base {
         $params['userid'] = $USER->id;
         $params['course'] = "%$fromform->sfcourse%";
         $params['bookingoption'] = "%$fromform->sfbookingoption%";
-        $params['location'] = "%$fromform->sflocation%";
+        $params['locationsarray'] = $fromform->sflocation;
 
         // Only use from-date if checkbox is active.
         if (isset($fromform->sffromcheckbox) && $fromform->sffromcheckbox == 1) {

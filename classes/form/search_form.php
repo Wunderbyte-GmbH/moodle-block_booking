@@ -75,7 +75,7 @@ class search_form extends moodleform {
                 $locations[$record->location] = $record->location;
             }
         }
-        $options = ['tags' => true];
+        $options = ['tags' => false, 'multiple' => true];
         $mform->addElement('autocomplete', 'sflocation', get_string('sflocation', 'block_booking'),
             $locations, $options);
         $mform->setType('sflocation', PARAM_TEXT);
