@@ -91,6 +91,10 @@ class block_booking extends block_base {
 
         $isstudent = !has_capability('block/booking:managesitebookingoptions', $context);
 
+        // The search form.
+        $data = new search_form_container($searchformhtml);
+        $this->content->text .= $output->render_search_form_container($data);
+
         // Process the form data after submit button has been pressed.
         if ($fromform = $searchform->get_data()) {
 
@@ -114,10 +118,6 @@ class block_booking extends block_base {
                 $this->content->text .= $output->render_searchresults_manager_view($data);
             }
         }
-
-        // The search form.
-        $data = new search_form_container($searchformhtml);
-        $this->content->text .= $output->render_search_form_container($data);
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.
         $this->page->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
