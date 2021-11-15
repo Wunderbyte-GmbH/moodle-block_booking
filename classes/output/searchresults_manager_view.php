@@ -58,8 +58,8 @@ class searchresults_manager_view implements renderable, templatable {
 
     /**
      * Constructor to prepare the data for the search results.
-     * @param $searchresultstablehtml
-     * @param $count
+     * @param string $searchresultstablehtml
+     * @param int $count
      * @throws coding_exception
      */
     public function __construct($searchresultstablehtml, $count) {
@@ -82,6 +82,7 @@ class searchresults_manager_view implements renderable, templatable {
     }
 
     /**
+     * Export the template parameters.
      * @param renderer_base $output
      * @return array
      */

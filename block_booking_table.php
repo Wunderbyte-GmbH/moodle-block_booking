@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * This file is needed as baseurl for block_booking.
+ * @package   block_booking
+ * @copyright 2021 Wunderbyte GmbH {@link http://www.wunderbyte.at}
+ * @author    Georg Maißer, Bernhard Fischer
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG, $PAGE, $COURSE;
 
 require_once("../../config.php");

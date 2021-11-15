@@ -17,7 +17,6 @@
  * JS helper functions for the Bookings Quickfinder block.
  *
  * @module     block_booking/actions
- * @package    block_booking
  * @copyright  2021 Wunderbyte GmbH <info@wunderbyte.at>
  * @author     Bernhard Fischer
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,21 +25,20 @@
 
 /**
  * Helper function to set correct page URL after search in block has been executed.
- * @param pageurl
+ * @param {string} pageurl
  */
 export const setpageurlwithjs = (pageurl) => {
-    const nextState = { additionalInformation: 'Updated the URL with JS' };
+    const nextState = {additionalInformation: 'Updated the URL with JS'};
 
-    // This will create a new entry in the browser's history, without reloading
+    // This will create a new entry in the browser's history, without reloading.
     window.history.pushState(nextState, '', pageurl);
 
-    // This will replace the current entry in the browser's history, without reloading
+    // This will replace the current entry in the browser's history, without reloading.
     window.history.replaceState(nextState, '', pageurl);
 };
 
 /**
  * Helper function to fix broken modal (behind backdrop) in "Moove" theme.
- * => Move modal to the end of the DOM (last child of body), so it will be before the backdrop again.
  */
 export const fixmodal = () => {
     if (document.readyState !== 'loading') {
@@ -51,6 +49,9 @@ export const fixmodal = () => {
         }, false);
     }
 
+    /**
+     * Move modal to the end of the DOM (last child of body), so it will be in front of the backdrop again.
+     */
     function movemodal() {
         let modal = document.getElementById('booking-block-modal');
         if (modal !== null) {

@@ -125,6 +125,7 @@ class searchresults_student_view implements renderable, templatable {
     }
 
     /**
+     * Export the template parameters.
      * @param renderer_base $output
      * @return array
      */

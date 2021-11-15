@@ -49,7 +49,7 @@ class search_form extends moodleform {
         $mform = $this->_form;
 
         // Id can be from course or mod, so we just get it from url param.
-        $id = optional_param('id', 0,PARAM_INT);
+        $id = optional_param('id', 0, PARAM_INT);
 
         // Important: This is needed to make the block work within courses.
         $mform->addElement('hidden', 'id', $id);

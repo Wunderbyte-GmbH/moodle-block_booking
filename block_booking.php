@@ -25,8 +25,7 @@ use mod_booking\table\bookingoptions_simple_table;
 /**
  * Block base class.
  *
- * @package    block
- * @subpackage booking
+ * @package    block_booking
  * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -131,11 +130,11 @@ class block_booking extends block_base {
 
     /**
      * Execute SQL and return rendered table from table lib.
-     * @param $sqldata
-     * @return array
+     * @param array $sqldata
+     * @return array rendered table and count of found records
      * @throws moodle_exception
      */
-    private function search_booking_options_manager_view($sqldata):array {
+    private function search_booking_options_manager_view(array $sqldata):array {
 
         global $CFG, $DB;
 
@@ -158,7 +157,7 @@ class block_booking extends block_base {
 
         $resultstable->is_downloading(false); // This is necessary to show the download button.
         $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
-        
+
         // As it seems, we do not need any URL params for this to work.
         $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php");
 
@@ -179,8 +178,8 @@ class block_booking extends block_base {
 
     /**
      * Execute sql and return results array for student.
-     * @param $sqldata
-     * @return array
+     * @param array $sqldata
+     * @return array records found in DB
      * @throws dml_exception
      */
     private function search_booking_options_student_view($sqldata) {
@@ -192,8 +191,8 @@ class block_booking extends block_base {
 
     /**
      * Create SQL for the students view.
-     * @param $params
-     * @return array
+     * @param array $params parameters to be used in the SQL query
+     * @return array $sqldata
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -252,8 +251,9 @@ class block_booking extends block_base {
     }
 
     /**
-     * Create sql for the teachers view.
-     * @return stdClass An object containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
+     * Create SQL for the teachers view.
+     * @param array $params parameters to be used in the SQL query
+     * @return array An array containing all SQL data needed for \mod_booking\table\bookingoptions_simple_table
      */
     public static function search_booking_options_manager_get_sqldata($params): array {
 
@@ -295,7 +295,7 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
-        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption) 
+        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
             "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime";
@@ -306,7 +306,7 @@ class block_booking extends block_base {
     }
 
     /**
-     * Helper function to generate the 
+     * Helper function to generate the
      * "AND bo.location in (:loc1, :loc2, ...)" SQL part
      * and the according params.
      *

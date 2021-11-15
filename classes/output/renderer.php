@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace block_booking\output;
 use plugin_renderer_base;
+use templatable;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -30,7 +31,7 @@ class renderer extends plugin_renderer_base {
 
     /**
      * Render function for search_form_container template.
-     * @param $data array
+     * @param templatable $data
      * @return string
      * @throws \moodle_exception
      */
@@ -43,11 +44,11 @@ class renderer extends plugin_renderer_base {
 
     /**
      * Render function for searchresults_student_view template.
-     * @param $data array
+     * @param templatable $searchresultsstudentview
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_student_view($searchresultsstudentview) {
+    public function render_searchresults_student_view(templatable $searchresultsstudentview):string {
         $o = '';
         $data = $searchresultsstudentview->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_student_view', $data);
@@ -56,11 +57,11 @@ class renderer extends plugin_renderer_base {
 
     /**
      * Render function for searchresults_manager_view template.
-     * @param $data array
+     * @param templatable $searchresultsmanagerview
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_manager_view($searchresultsmanagerview) {
+    public function render_searchresults_manager_view($searchresultsmanagerview):string {
         $o = '';
         $data = $searchresultsmanagerview->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_manager_view', $data);

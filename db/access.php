@@ -17,8 +17,7 @@
 /**
  * Defines capabilities for the plugin.
  *
- * @package    block
- * @subpackage booking
+ * @package    block_booking
  * @author     David Bogner <info@wunderbyte.at>
  * @copyright  2014-2021 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

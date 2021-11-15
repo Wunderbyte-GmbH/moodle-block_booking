@@ -23,14 +23,15 @@
     Data attributes required for JS:
     * data-region
 
-    TODO:
     Context variables required for this template:
-    * examplevariable - array: An array with values.
-    * etc.
+    * resultsarray - array: contains the results
+    * title - string: The modal's title.
+    * resultsmessage - string: The results message.
+    * success - bool: True if successful, else false.
 
     Example context (json):
     {
-        "resultsarray":[
+        "resultsarray": [
             {
             "optionid":"37",
             "cmid":"104",
@@ -45,8 +46,9 @@
             "link":"http:\/\/localhost:8080\/moodle311\/mod\/booking\/view.php?id=104&optionid=37&action=showonlyone&whichview=showonlyone"
             }
         ],
-        "resultsmessage":"1 booking options found (click to show)",
-        "success":true
+        "resultsmessage": "1 booking options found (click to show)",
+        "success": true,
+        "title": "Exampletitle"
     }
 }}
 {{#resultsmessage}}
