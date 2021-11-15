@@ -239,8 +239,8 @@ class block_booking extends block_base {
                 ON ba.optionid = bo.id";
         $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
-                AND bo.text like :bookingoption
-                AND c.fullname like :course" .
+                AND LOWER(bo.text) LIKE LOWER(:bookingoption)
+                AND LOWER(c.fullname) LIKE LOWER(:course)" .
                 $inlocationssql .
                 "AND bo.coursestarttime >= :coursestarttime
                 AND bo.courseendtime <= :courseendtime
@@ -295,7 +295,8 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
-        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course " .
+        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption) 
+            AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
             "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime";
 
