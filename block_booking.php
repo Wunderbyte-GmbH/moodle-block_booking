@@ -151,20 +151,16 @@ class block_booking extends block_base {
         // Define the titles of columns to show in header.
         $headers = [];
         foreach ($columns as $column) {
-            // Use prefix 'bst' (meaning bookingoptions_simple_table).
+            // Use prefix 'bst' (meaning: bookingoptions_simple_table).
             $headers[] = get_string('bst' . $column, 'mod_booking');
         }
         $resultstable->define_headers($headers);
 
         $resultstable->is_downloading(false); // This is necessary to show the download button.
         $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
-
-        // We use the prefix sf in our url to make sure we don't get mixed up in the names.
-        $urlparams = [];
-        foreach ($sqldata['params'] as $key => $value) {
-            $urlparams["sf$key"] = $value;
-        }
-        $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php", $urlparams);
+        
+        // As it seems, we do not need any URL params for this to work.
+        $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php");
 
         // Write the results table to buffer and store HTML in a variable.
         ob_start();
@@ -210,8 +206,18 @@ class block_booking extends block_base {
         foreach ($enrolledactivecourses as $courserecord) {
             $enrolledactivecoursesids[] = $courserecord->id;
         }
+
         // Get the 'in' part of the SQL.
         list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
+        if (!empty($inparams)) {
+            $params = array_merge($params, $inparams);
+        }
+
+        // Generate the part needed for multi-location search.
+        list($inlocationssql, $inlocationsparams) = self::generate_in_locations_sql($params['locationsarray']);
+        if (!empty($inlocationsparams)) {
+            $params = array_merge($params, $inlocationsparams);
+        }
 
         $sqldata = [];
         $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
@@ -235,12 +241,12 @@ class block_booking extends block_base {
                 AND s1.visible <> 0
                 AND bo.text like :bookingoption
                 AND c.fullname like :course" .
-                self::generate_in_locations_sql($params['locationsarray']) .
+                $inlocationssql .
                 "AND bo.coursestarttime >= :coursestarttime
                 AND bo.courseendtime <= :courseendtime
                 AND c.id $insql";
 
-        $sqldata['params'] = array_merge($params, $inparams);
+        $sqldata['params'] = $params;
 
         return $sqldata;
     }
@@ -255,8 +261,8 @@ class block_booking extends block_base {
         $sqldata = [];
 
         // Create all parts of the SQL select query.
-        $sqldata['fields'] = "bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course, ' .
-            'bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist";
+        $sqldata['fields'] = "bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course,
+            bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist";
 
         $sqldata['from'] = "{booking_options} bo
             LEFT JOIN {booking} b
@@ -283,8 +289,14 @@ class block_booking extends block_base {
                 GROUP BY ba.optionid
             ) w ON bo.id = w.optionid";
 
+        // Generate the part needed for multi-location search.
+        list($inlocationssql, $inlocationsparams) = self::generate_in_locations_sql($params['locationsarray']);
+        if (!empty($inlocationsparams)) {
+            $params = array_merge($params, $inlocationsparams);
+        }
+
         $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND bo.text like :bookingoption AND c.fullname like :course " .
-            self::generate_in_locations_sql($params['locationsarray']) .
+            $inlocationssql .
             "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime";
 
         $sqldata['params'] = $params;
@@ -293,21 +305,26 @@ class block_booking extends block_base {
     }
 
     /**
-     * Helper function to generate the "AND bo.location in ('location1', 'location2',...)" SQL part.
+     * Helper function to generate the 
+     * "AND bo.location in (:loc1, :loc2, ...)" SQL part
+     * and the according params.
      *
      * @param array $locationsarray an array of location strings
-     * @return string the SQL part needed (empty string if array is empty)
+     * @return array the SQL part needed (string) and the params needed (array)
      */
-    private static function generate_in_locations_sql(array $locationsarray): string {
+    private static function generate_in_locations_sql(array $locationsarray): array {
+        global $DB;
 
         // Generate the locations SQL part.
         if (!empty($locationsarray)) {
-            $inlocationssql = "AND bo.location IN ('" . implode("', '", $locationsarray) . "')";
+            list($inlocationssql, $inlocationsparams) = $DB->get_in_or_equal($locationsarray, SQL_PARAMS_NAMED, 'loc');
+            $inlocationssql = "AND bo.location " . $inlocationssql;
         } else {
             $inlocationssql = "";
+            $inlocationsparams = [];
         }
 
-        return $inlocationssql;
+        return [$inlocationssql, $inlocationsparams];
     }
 
     /**
