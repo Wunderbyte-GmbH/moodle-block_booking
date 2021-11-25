@@ -52,3 +52,4 @@ $string['nosearchresults'] = 'Es konnten keine Buchungsoptionen gefunden werden.
 $string['booked'] = 'Sie haben diese Option gebucht.';
 $string['onwaitinglist'] = 'Sie sind auf der Warteliste.';
 $string['modalheadertitle'] = '{$a->count} Buchungsoptionen gefunden';
+$string['btnshow'] = 'Anzeigen';

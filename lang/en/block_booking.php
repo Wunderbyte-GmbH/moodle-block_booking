@@ -52,3 +52,4 @@ $string['nosearchresults'] = 'No booking options could be found. Please try chan
 $string['booked'] = 'You have booked this option.';
 $string['onwaitinglist'] = 'You are on the waiting list.';
 $string['modalheadertitle'] = '{$a->count} booking options found';
+$string['btnshow'] = 'Show';
