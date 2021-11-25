@@ -143,6 +143,14 @@
     padding-left: 0;
 }
 
+.block_booking #fitem_id_sfteacher label {
+    font-size: small;
+}
+
+.block_booking #fitem_id_sfteacher .col-form-label {
+    padding-left: 0;
+}
+
 .block_booking #id_sfcoursestarttime_label {
     font-size: small;
 }

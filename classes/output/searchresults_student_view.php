@@ -69,7 +69,28 @@ class searchresults_student_view implements renderable, templatable {
      */
     public function __construct(array $results) {
 
-        global $CFG;
+        global $CFG, $DB;
+
+        // Cache teacher names of every option to reduce DB-queries.
+        $list = [];
+        $teachers = [];
+        foreach ($results as $objectentry) {
+            $list[] = $objectentry->optionid;
+            $teachers[$objectentry->optionid] = [];
+        }
+        list($insql, $inparams) = $DB->get_in_or_equal($list, SQL_PARAMS_NAMED, 'optionid_');
+
+        $sql = "SELECT DISTINCT bt.id, bt.userid, u.firstname, u.lastname, u.username, bt.optionid
+                FROM {booking_teachers} bt
+                JOIN m_user u
+                ON bt.userid = u.id
+                WHERE bt.optionid $insql";
+
+        if ($records = $DB->get_records_sql($sql, $inparams)) {
+            foreach ($records as $record) {
+                $teachers[$record->optionid][] = $record->lastname . ' ' . $record->firstname;
+            }
+        }
 
         // Results are an array of objects but need to be typecast to an associative array so the template will work.
         foreach ($results as $objectentry) {
@@ -104,6 +125,11 @@ class searchresults_student_view implements renderable, templatable {
                         $objectentry->waitinglist = true;
                         break;
                 }
+            }
+
+            // Add teachers if there are any.
+            if (!empty($teachers[$objectentry->optionid])) {
+                $objectentry->teachers = implode(', ', $teachers[$objectentry->optionid]);
             }
 
             // Convert to array, otherwise the mustache template won't work.

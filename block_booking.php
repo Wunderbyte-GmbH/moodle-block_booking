@@ -218,8 +218,15 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
+        // Generate the "AND..." part needed for teacher search.
+        $andteacher = ''; // Empty by default.
+        if (!empty($params['teacherid'])) {
+            $andteacher = 'AND bt.userid = :teacherid';
+            $params = array_merge($params, ['teacherid' => $params['teacherid']]);
+        }
+
         $sqldata = [];
-        $sqldata['select'] = "SELECT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
+        $sqldata['select'] = "SELECT DISTINCT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid,
             c.fullname course, bo.location, bo.coursestarttime, bo.courseendtime, ba.waitinglist";
         $sqldata['from'] = "FROM {booking_options} bo
                 LEFT JOIN {booking} b
@@ -235,7 +242,9 @@ class block_booking extends block_base {
                 LEFT JOIN (SELECT id, optionid, completed, waitinglist
                 FROM {booking_answers}
                 WHERE userid = :userid) ba
-                ON ba.optionid = bo.id";
+                ON ba.optionid = bo.id
+                LEFT JOIN {booking_teachers} bt
+                ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid";
         $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
                 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
@@ -243,7 +252,8 @@ class block_booking extends block_base {
                 $inlocationssql .
                 "AND bo.coursestarttime >= :coursestarttime
                 AND bo.courseendtime <= :courseendtime
-                AND c.id $insql";
+                AND c.id $insql
+                $andteacher";
 
         $sqldata['params'] = $params;
 
@@ -261,7 +271,7 @@ class block_booking extends block_base {
         $sqldata = [];
 
         // Create all parts of the SQL select query.
-        $sqldata['fields'] = "bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course,
+        $sqldata['fields'] = "DISTINCT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course,
             bo.location, bo.coursestarttime, bo.courseendtime, p.participants, w.waitinglist";
 
         $sqldata['from'] = "{booking_options} bo
@@ -287,7 +297,9 @@ class block_booking extends block_base {
                 FROM {booking_answers} ba
                 WHERE waitinglist = 1
                 GROUP BY ba.optionid
-            ) w ON bo.id = w.optionid";
+            ) w ON bo.id = w.optionid
+            LEFT JOIN {booking_teachers} bt
+            ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid";
 
         // Generate the part needed for multi-location search.
         list($inlocationssql, $inlocationsparams) = self::generate_in_locations_sql($params['locationsarray']);
@@ -295,10 +307,18 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
+        // Generate the "AND..." part needed for teacher search.
+        $andteacher = ''; // Empty by default.
+        if (!empty($params['teacherid'])) {
+            $andteacher = 'AND bt.userid = :teacherid';
+            $params = array_merge($params, ['teacherid' => $params['teacherid']]);
+        }
+
         $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
-            "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime";
+            "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime" .
+            $andteacher;
 
         $sqldata['params'] = $params;
 
@@ -350,6 +370,7 @@ class block_booking extends block_base {
         $params['course'] = "%$fromform->sfcourse%";
         $params['bookingoption'] = "%$fromform->sfbookingoption%";
         $params['locationsarray'] = $fromform->sflocation;
+        $params['teacherid'] = $fromform->sfteacher;
 
         // Only use from-date if checkbox is active.
         if (isset($fromform->sffromcheckbox) && $fromform->sffromcheckbox == 1) {

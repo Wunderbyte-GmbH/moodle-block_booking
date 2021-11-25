@@ -80,6 +80,24 @@ class search_form extends moodleform {
             $locations, $options);
         $mform->setType('sflocation', PARAM_TEXT);
 
+        // First entry is selected by default, so let's make it empty.
+        $teachers = ['' => ''];
+        // Get all teachers from DB.
+        $teacherssql = "SELECT DISTINCT bt.userid, u.firstname, u.lastname, u.username
+                        FROM {booking_teachers} bt
+                        JOIN {user} u
+                        ON bt.userid = u.id";
+        if ($records = $DB->get_records_sql($teacherssql)) {
+            // Add every teacher to the array (userid as key, full name as value).
+            foreach ($records as $record) {
+                $teachers[$record->userid] = $record->lastname . ' ' . $record->firstname;
+            }
+        }
+        $options = ['tags' => false, 'multiple' => false];
+        $mform->addElement('autocomplete', 'sfteacher', get_string('sfteacher', 'block_booking'),
+            $teachers, $options);
+        $mform->setType('sfteacher', PARAM_TEXT);
+
         $mform->addElement('checkbox', 'sffromcheckbox', get_string('sffromcheckbox', 'block_booking'));
         $mform->setDefault('sffromcheckbox', 1);
 
