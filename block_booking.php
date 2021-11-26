@@ -243,6 +243,8 @@ class block_booking extends block_base {
                 FROM {booking_answers}
                 WHERE userid = :userid) ba
                 ON ba.optionid = bo.id
+                LEFT JOIN {booking_optiondates} bod
+                ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
                 LEFT JOIN {booking_teachers} bt
                 ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid";
         $sqldata['where'] = "WHERE bo.bookingid <> 0
@@ -250,10 +252,14 @@ class block_booking extends block_base {
                 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
                 AND LOWER(c.fullname) LIKE LOWER(:course)" .
                 $inlocationssql .
-                "AND bo.coursestarttime >= :coursestarttime
-                AND bo.courseendtime <= :courseendtime
+                "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
+                (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
                 AND c.id $insql
                 $andteacher";
+
+        // Params cannot be used twice, so we need to add them again.
+        $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
+                                        'courseendtime2' => $params['courseendtime']]);
 
         $sqldata['params'] = $params;
 
@@ -298,6 +304,8 @@ class block_booking extends block_base {
                 WHERE waitinglist = 1
                 GROUP BY ba.optionid
             ) w ON bo.id = w.optionid
+            LEFT JOIN {booking_optiondates} bod
+            ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
             LEFT JOIN {booking_teachers} bt
             ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid";
 
@@ -317,8 +325,13 @@ class block_booking extends block_base {
         $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
-            "AND bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime" .
+            "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
+            "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))" .
             $andteacher;
+
+        // Params cannot be used twice, so we need to add them again.
+        $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
+                                        'courseendtime2' => $params['courseendtime']]);
 
         $sqldata['params'] = $params;
 
