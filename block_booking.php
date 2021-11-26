@@ -142,7 +142,7 @@ class block_booking extends block_base {
 
         // Define the list of columns to show.
         $columns = [
-            'text', 'course', 'coursestarttime', 'courseendtime', 'location', 'participants',
+            'text', 'course', 'coursestarttime', 'courseendtime', 'location', 'teacher', 'participants',
             'waitinglist', 'manageresponses', 'link'
         ];
         $resultstable->define_columns($columns);
@@ -150,7 +150,7 @@ class block_booking extends block_base {
         // Define the titles of columns to show in header.
         $headers = [];
         foreach ($columns as $column) {
-            // Use prefix 'bst' (meaning: bookingoptions_simple_table).
+            // Prefix bst means bookingoptions_simple_table.
             $headers[] = get_string('bst' . $column, 'mod_booking');
         }
         $resultstable->define_headers($headers);
