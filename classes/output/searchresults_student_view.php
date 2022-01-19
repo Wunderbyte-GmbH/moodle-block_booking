@@ -61,11 +61,12 @@ class searchresults_student_view implements renderable, templatable {
     /**
      * Constructor to prepare the data for the search results.
      * @param array $results An array containing the search results.
+     * @param array $inactivecoursesids An array of courses to which the user is NOT enrolled.
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function __construct(array $results) {
+    public function __construct(array $results, array $inactivecoursesids = []) {
 
         global $CFG;
 
@@ -91,26 +92,34 @@ class searchresults_student_view implements renderable, templatable {
                     . ' - ' . userdate($objectentry->courseendtime, get_string('strftimedatetime'));
             }
 
-            // Add a link to redirect to the clicked booking option.
-            $link = new moodle_url($CFG->wwwroot . '/mod/booking/view.php', array(
-                'id' => $objectentry->cmid,
-                'optionid' => $objectentry->optionid,
-                'action' => 'showonlyone',
-                'whichview' => 'showonlyone'
-            ));
-            // Use html_entity_decode to convert "&amp;" to a simple "&" character.
-            $objectentry->link = html_entity_decode($link->out());
+            if (in_array($objectentry->courseid, $inactivecoursesids)) {
 
-            // Check if user is already booked or on waiting list.
-            if (isset($objectentry->waitinglist)) {
-                switch ($objectentry->waitinglist) {
-                    case 0:
-                        unset($objectentry->waitinglist);
-                        $objectentry->booked = true;
-                        break;
-                    case 1:
-                        $objectentry->waitinglist = true;
-                        break;
+                // Check if the current option is in a course to which the user is not enrolled.
+                $objectentry->notenrolled = true;
+
+            } else {
+
+                // Add a link to redirect to the clicked booking option.
+                $link = new moodle_url($CFG->wwwroot . '/mod/booking/view.php', array(
+                    'id' => $objectentry->cmid,
+                    'optionid' => $objectentry->optionid,
+                    'action' => 'showonlyone',
+                    'whichview' => 'showonlyone'
+                ));
+                // Use html_entity_decode to convert "&amp;" to a simple "&" character.
+                $objectentry->link = html_entity_decode($link->out());
+
+                // Check if user is already booked or on waiting list.
+                if (isset($objectentry->waitinglist)) {
+                    switch ($objectentry->waitinglist) {
+                        case 0:
+                            unset($objectentry->waitinglist);
+                            $objectentry->booked = true;
+                            break;
+                        case 1:
+                            $objectentry->waitinglist = true;
+                            break;
+                    }
                 }
             }
 

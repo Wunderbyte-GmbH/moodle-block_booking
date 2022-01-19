@@ -101,6 +101,13 @@
     padding: 5px;
 }
 
+#booking-block-modal .bqf-info-notenrolled {
+    position: absolute;
+    top: 37px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 #booking-block-modal .bqf-button-show {
     position: relative;
     top: -5px;

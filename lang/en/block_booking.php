@@ -52,5 +52,16 @@ $string['searchresultsfound'] = '{$a->count} booking options found (click to sho
 $string['nosearchresults'] = 'No booking options could be found. Please try changing your filters or use less of them...';
 $string['booked'] = 'You have booked this option.';
 $string['onwaitinglist'] = 'You are on the waiting list.';
+$string['notenrolled'] = 'Your are not enrolled in this course.';
 $string['modalheadertitle'] = '{$a->count} booking options found';
 $string['btnshow'] = 'Show';
+
+// File: settings.php.
+$string['settingsheader'] = 'Bookings Quickfinder Settings';
+$string['settingsheaderdesc'] = 'Here you can edit global settings for all instances of the Bookings Quickfinder block on your platform.';
+$string['userinfofield'] = 'Show additional bookings';
+$string['userinfofielddesc'] =
+    'A user can see additional bookings of courses even if (s)he is not actually enrolled in them.
+    If the value of the selected user profile field corresponds with the name of a group within a course,
+    the user can see all the booking options from any booking instance within this course.';
+$string['userinfofieldoff'] = 'Do not show';

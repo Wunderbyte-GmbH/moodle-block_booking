@@ -78,9 +78,12 @@
                 <!-- The actual content goes here. -->
                 <div class="list-group">
                     {{#results}}
-                        <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="list-group-item flex-column align-items-start {{#notenrolled}}list-group-item-secondary{{/notenrolled}}">
                             <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1"><a href="{{link}}">{{text}}</a></h5>
+                                <h5 class="mb-1">
+                                    {{^notenrolled}}<a href="{{link}}">{{text}}</a>{{/notenrolled}}
+                                    {{#notenrolled}}{{text}}{{/notenrolled}}
+                                </h5>
                                 <p class="mb-1">{{#str}} sfcourse, block_booking {{/str}}: {{course}}</p>
                             </div>
                             {{#datestring}}
@@ -93,13 +96,18 @@
                                 <div><small>{{#str}} sfteacher, block_booking {{/str}}: {{.}}</small></div>
                             {{/teachers}}
                             <div class="d-flex w-100 justify-content-end">
-                                <a href="{{link}}" class="btn btn-primary bqf-button-show">{{#str}} btnshow, block_booking {{/str}}</a>
+                                {{^notenrolled}}
+                                    <a href="{{link}}" class="btn btn-primary bqf-button-show">{{#str}} btnshow, block_booking {{/str}}</a>
+                                {{/notenrolled}}
                                 {{#booked}}
-                                    <div class="btn alert-success bqf-info-booked">{{#str}} booked, block_booking {{/str}}</div>
+                                    <div class="btn alert-success disabled bqf-info-booked">{{#str}} booked, block_booking {{/str}}</div>
                                 {{/booked}}
                                 {{#waitinglist}}
-                                    <div class="btn alert-info bqf-info-waitinglist">{{#str}} onwaitinglist, block_booking {{/str}}</div>
+                                    <div class="btn alert-info disabled bqf-info-waitinglist">{{#str}} onwaitinglist, block_booking {{/str}}</div>
                                 {{/waitinglist}}
+                                {{#notenrolled}}
+                                    <div class="btn alert-danger disabled bqf-info-notenrolled">{{#str}} notenrolled, block_booking {{/str}}</div>
+                                {{/notenrolled}}
                             </div>
                         </div>
                     {{/results}}

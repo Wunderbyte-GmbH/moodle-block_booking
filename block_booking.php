@@ -99,10 +99,10 @@ class block_booking extends block_base {
 
             // Create the actual table mod differently for students or teachers.
             if ($isstudent) {
-                $sqldata = self::search_booking_options_student_get_sqldata($params);
+                list($sqldata, $inactivecoursesids) = self::search_booking_options_student_get_sqldata($params);
                 // Show search results for students.
                 $results = $this->search_booking_options_student_view($sqldata);
-                $data = new searchresults_student_view($results);
+                $data = new searchresults_student_view($results, $inactivecoursesids);
                 $this->content->text .= $output->render_searchresults_student_view($data);
             } else {
                 // Execute the search.
@@ -190,7 +190,7 @@ class block_booking extends block_base {
     /**
      * Create SQL for the students view.
      * @param array $params parameters to be used in the SQL query
-     * @return array $sqldata
+     * @return array [array $sqldata, array $inactivecoursesids]
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -198,14 +198,46 @@ class block_booking extends block_base {
         global $DB, $USER;
 
         // Get all courses where the current user is enrolled and active.
-        $enrolledactivecoursesids = [];
-        $enrolledactivecourses = enrol_get_users_courses($USER->id, true, ['id']);
-        foreach ($enrolledactivecourses as $courserecord) {
-            $enrolledactivecoursesids[] = $courserecord->id;
+        $visiblecoursesids = [];
+        $visiblecourses = enrol_get_users_courses($USER->id, true, ['id']);
+        foreach ($visiblecourses as $courserecord) {
+            $visiblecoursesids[] = $courserecord->id;
+        }
+
+        /* If the global setting to show additional bookings is active
+         * then show additional bookings of courses even if the user is not actually enrolled in them.
+         * If the value of the selected user profile field corresponds with the name of a group within a course,
+         * the user can see all the booking options from any booking instance within this course. */
+        $fieldid = get_config('block_booking', 'userinfofield');
+
+        // Store course ids of courses to which the user is not enrolled.
+        $inactivecoursesids = [];
+
+        if (!empty($fieldid)) {
+
+            $additionalcourses = $DB->get_records_sql(
+                "SELECT DISTINCT courseid FROM {groups} WHERE name IN (
+                    SELECT data FROM {user_info_data}
+                    WHERE userid = :userid and fieldid = :fieldid
+                )", ['fieldid' => $fieldid, 'userid' => $USER->id]);
+
+            foreach ($additionalcourses as $additionalcourse) {
+
+                $currentid = $additionalcourse->courseid;
+
+                // Track inactive courses in an extra array.
+                // This will be needed for the template.
+                if (!in_array($currentid, $visiblecoursesids)) {
+                    $inactivecoursesids[] = $currentid;
+                }
+
+                // Add the additional courses.
+                $visiblecoursesids[] = $currentid;
+            }
         }
 
         // Get the 'in' part of the SQL.
-        list($insql, $inparams) = $DB->get_in_or_equal($enrolledactivecoursesids, SQL_PARAMS_NAMED, 'courseid_');
+        list($insql, $inparams) = $DB->get_in_or_equal($visiblecoursesids, SQL_PARAMS_NAMED, 'courseid_');
         if (!empty($inparams)) {
             $params = array_merge($params, $inparams);
         }
@@ -261,7 +293,7 @@ class block_booking extends block_base {
 
         $sqldata['params'] = $params;
 
-        return $sqldata;
+        return [$sqldata, $inactivecoursesids];
     }
 
     /**
@@ -360,11 +392,11 @@ class block_booking extends block_base {
     }
 
     /**
-     * This block currently has no settings.php.
-     * @return false
+     * This will tell Moodle that the block has a settings.php.
+     * @return true
      */
     public function has_config() {
-        return false;
+        return true;
     }
 
     /**

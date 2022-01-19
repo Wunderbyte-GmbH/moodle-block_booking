@@ -52,5 +52,16 @@ $string['searchresultsfound'] = '{$a->count} Buchungsoptionen gefunden (zum Anze
 $string['nosearchresults'] = 'Es konnten keine Buchungsoptionen gefunden werden. Bitte probieren Sie es mit anderen (oder weniger) Filtern noch einmal...';
 $string['booked'] = 'Sie haben diese Option gebucht.';
 $string['onwaitinglist'] = 'Sie sind auf der Warteliste.';
+$string['notenrolled'] = 'Sie sind in diesen Kurs nicht eingeschrieben.';
 $string['modalheadertitle'] = '{$a->count} Buchungsoptionen gefunden';
 $string['btnshow'] = 'Anzeigen';
+
+// File: settings.php.
+$string['settingsheader'] = 'Block "Buchungen suchen (Schnellsuche)" - Einstellungen';
+$string['settingsheaderdesc'] = 'Hier können Sie globale Einstellungen für alle Instanzen des Blocks "Buchungen suchen (Schnellsuche)" auf ihrer Plattform durchführen.';
+$string['userinfofield'] = 'Zusätzliche Buchungen anzeigen';
+$string['userinfofielddesc'] =
+    'Die User können zusätzliche Buchungen von Kursen sehen, auch wenn Sie nicht in diese Kurse eingeschrieben sind.
+    Wenn der Wert des ausgewählten Userprofil-Felds mit dem Namen einer Gruppe innerhalb eines Kurses übereinstimmt,
+    dann werden dem User / der Userin alle Buchungsoptionen aus allen Buchungsinstanzen innerhalb dieses Kurses angezeigt.';
+$string['userinfofieldoff'] = 'Nicht anzeigen';
