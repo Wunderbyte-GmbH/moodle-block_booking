@@ -19,14 +19,14 @@
  *
  * @package    block_booking
  * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
- * @copyright  2014-2021 https://www.wunderbyte.at
+ * @copyright  2014-2022 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021112900; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = '3.3.1';
+$plugin->version = 2022020100; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = '3.3.2';
 $plugin->supported = [39, 311];
 $plugin->component = 'block_booking';
 $plugin->maturity = MATURITY_STABLE;
