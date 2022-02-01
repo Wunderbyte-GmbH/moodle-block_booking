@@ -24,8 +24,6 @@
  */
 namespace block_booking\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use coding_exception;
 use dml_exception;
 use mod_booking\booking_utils;

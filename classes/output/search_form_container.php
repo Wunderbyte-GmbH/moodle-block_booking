@@ -24,8 +24,6 @@
  */
 namespace block_booking\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderer_base;
 use renderable;
 use templatable;

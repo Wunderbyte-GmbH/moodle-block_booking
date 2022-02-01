@@ -17,8 +17,6 @@ namespace block_booking\output;
 use plugin_renderer_base;
 use templatable;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * A custom renderer class that extends the plugin_renderer_base and is used by the booking block.
  *
@@ -35,7 +33,7 @@ class renderer extends plugin_renderer_base {
      * @return string
      * @throws \moodle_exception
      */
-    public function render_search_form_container($data) {
+    public function render_search_form_container(templatable $data): string {
         $o = '';
         $data = $data->export_for_template($this);
         $o .= $this->render_from_template('block_booking/search_form_container', $data);
@@ -48,7 +46,7 @@ class renderer extends plugin_renderer_base {
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_student_view(templatable $searchresultsstudentview):string {
+    public function render_searchresults_student_view(templatable $searchresultsstudentview): string {
         $o = '';
         $data = $searchresultsstudentview->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_student_view', $data);
@@ -61,7 +59,7 @@ class renderer extends plugin_renderer_base {
      * @return string
      * @throws \moodle_exception
      */
-    public function render_searchresults_manager_view($searchresultsmanagerview):string {
+    public function render_searchresults_manager_view(templatable $searchresultsmanagerview): string {
         $o = '';
         $data = $searchresultsmanagerview->export_for_template($this);
         $o .= $this->render_from_template('block_booking/searchresults_manager_view', $data);
