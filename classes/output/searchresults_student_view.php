@@ -69,13 +69,20 @@ class searchresults_student_view implements renderable, templatable {
      */
     public function __construct(array $results) {
 
-        global $CFG, $DB;
+        global $CFG;
 
         // Prepare an associative array of optionids with according teacher names to save DB queries.
         $teachers = booking_utils::prepare_teachernames_arrays_for_optionids($results);
 
         // Results are an array of objects but need to be typecast to an associative array so the template will work.
         foreach ($results as $objectentry) {
+
+            // Improvement: Only create object entries, if the course module is visible for the user.
+            $modinfo = get_fast_modinfo($objectentry->courseid);
+            $cm = $modinfo->get_cm($objectentry->cmid);
+            if (!$cm->uservisible) {
+                continue;
+            }
 
             // Remove identifier key and separator if necessary.
             booking_utils::transform_unique_bookingoption_name_to_display_name($objectentry);
