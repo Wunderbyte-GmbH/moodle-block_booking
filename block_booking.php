@@ -236,10 +236,16 @@ class block_booking extends block_base {
             }
         }
 
-        // Get the 'in' part of the SQL.
-        list($insql, $inparams) = $DB->get_in_or_equal($visiblecoursesids, SQL_PARAMS_NAMED, 'courseid_');
-        if (!empty($inparams)) {
-            $params = array_merge($params, $inparams);
+        // Get the 'in' part of the SQL for visible courses.
+        if (!empty($visiblecoursesids)) {
+            list($insql, $inparams) = $DB->get_in_or_equal($visiblecoursesids, SQL_PARAMS_NAMED, 'courseid_');
+            if (!empty($inparams)) {
+                $params = array_merge($params, $inparams);
+            }
+            $andcourseid = "AND c.id $insql";
+        } else {
+            // No courses visible, so don't show any.
+            $andcourseid = 'AND c.id = null';
         }
 
         // Generate the part needed for multi-location search.
@@ -280,11 +286,11 @@ class block_booking extends block_base {
         $sqldata['where'] = "WHERE bo.bookingid <> 0
                 AND s1.visible <> 0
                 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
-                AND LOWER(c.fullname) LIKE LOWER(:course)" .
-                $inlocationssql .
-                "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
+                AND LOWER(c.fullname) LIKE LOWER(:course)
+                $inlocationssql
+                AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
                 (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
-                AND c.id $insql
+                $andcourseid
                 $andteacher";
 
         // Params cannot be used twice, so we need to add them again.
