@@ -77,10 +77,12 @@ class searchresults_student_view implements renderable, templatable {
         foreach ($results as $objectentry) {
 
             // Improvement: Only create object entries, if the course module is visible for the user.
-            $modinfo = get_fast_modinfo($objectentry->courseid);
-            $cm = $modinfo->get_cm($objectentry->cmid);
-            if (!$cm->uservisible) {
-                continue;
+            if (!in_array($objectentry->courseid, $inactivecoursesids)) {
+                $modinfo = get_fast_modinfo($objectentry->courseid);
+                $cm = $modinfo->get_cm($objectentry->cmid);
+                if (!$cm->uservisible) {
+                    continue;
+                }
             }
 
             // Remove identifier key and separator if necessary.
