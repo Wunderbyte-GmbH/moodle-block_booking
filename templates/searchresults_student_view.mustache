@@ -80,10 +80,22 @@
                     {{#results}}
                         <div class="list-group-item flex-column align-items-start {{#notenrolled}}list-group-item-secondary{{/notenrolled}}">
                             <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">
-                                    {{^notenrolled}}<a href="{{link}}">{{text}}</a>{{/notenrolled}}
-                                    {{#notenrolled}}{{text}}{{/notenrolled}}
-                                </h5>
+                                <div class="mb-1">
+                                    <div>
+                                        {{^notenrolled}}<a href="{{link}}"><h5>{{text}}</h5></a>{{/notenrolled}}
+                                        {{#notenrolled}}<h5>{{text}}</h5>{{/notenrolled}}
+                                    </div>
+                                    {{#description}}
+                                    <a class="text-primary" data-toggle="collapse" href="#collapsibledescription{{optionid}}" role="button" aria-expanded="false" aria-controls="collapsibledescription{{optionid}}">
+                                        <small>{{#str}} description, mod_booking {{/str}}...</small>
+                                    </a>
+                                    <div class="collapse" id="collapsibledescription{{optionid}}">
+                                    <div class="card card-body">
+                                        {{{.}}}
+                                    </div>
+                                    </div>
+                                    {{/description}}
+                                </div>
                                 <p class="mb-1">{{#str}} sfcourse, block_booking {{/str}}: {{course}}</p>
                             </div>
                             {{#datestring}}
