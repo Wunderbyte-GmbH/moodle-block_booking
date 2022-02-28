@@ -291,7 +291,8 @@ class block_booking extends block_base {
                 AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
                 (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
                 $andcourseid
-                $andteacher";
+                $andteacher
+                ORDER BY bo.text, bo.coursestarttime";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
@@ -362,8 +363,9 @@ class block_booking extends block_base {
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
             "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
-            "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))" .
-            $andteacher;
+            "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)) " .
+            $andteacher .
+            " ORDER BY bo.text, bo.coursestarttime";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
