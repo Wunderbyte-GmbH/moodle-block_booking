@@ -66,6 +66,9 @@ class block_booking extends block_base {
         // Set system context.
         $context = context_system::instance();
 
+        // Determine if current user is a student or not.
+        $isstudent = !has_capability('block/booking:managesitebookingoptions', $context);
+
         if ($this->content !== null) {
             return $this->content;
         }
@@ -86,10 +89,8 @@ class block_booking extends block_base {
         $this->content = new stdClass();
         $this->content->text = '';
 
-        $isstudent = !has_capability('block/booking:managesitebookingoptions', $context);
-
         // The search form.
-        $data = new search_form_container($searchformhtml);
+        $data = new search_form_container($searchformhtml); // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
         $this->content->text .= $output->render_search_form_container($data);
 
         // Process the form data after submit button has been pressed.
@@ -292,7 +293,7 @@ class block_booking extends block_base {
                 (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
                 $andcourseid
                 $andteacher
-                ORDER BY bo.text, bo.coursestarttime";
+                ORDER BY bo.coursestarttime ASC";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
@@ -365,7 +366,7 @@ class block_booking extends block_base {
             "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
             "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)) " .
             $andteacher .
-            " ORDER BY bo.text, bo.coursestarttime";
+            " ORDER BY bo.coursestarttime ASC";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
