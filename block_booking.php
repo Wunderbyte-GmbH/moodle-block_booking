@@ -74,7 +74,7 @@ class block_booking extends block_base {
         }
 
         // Initialize the search form.
-        $searchform = new search_form();
+        $searchform = new search_form($context);
 
         // Collect the search form HTML in a buffer.
         ob_start();
@@ -211,10 +211,17 @@ class block_booking extends block_base {
          * the user can see all the booking options from any booking instance within this course. */
         $fieldid = get_config('block_booking', 'userinfofield');
 
+        // Check the "Booked modules only" filter.
+        if (isset($params['bookedmodulesonly']) && $params['bookedmodulesonly'] === 1) {
+            $bookedmodulesonly = true;
+        } else {
+            $bookedmodulesonly = false;
+        }
+
         // Store course ids of courses to which the user is not enrolled.
         $inactivecoursesids = [];
 
-        if (!empty($fieldid)) {
+        if (!empty($fieldid) && !$bookedmodulesonly) {
 
             $additionalcourses = $DB->get_records_sql(
                 "SELECT DISTINCT courseid FROM {groups} WHERE name IN (
@@ -437,6 +444,12 @@ class block_booking extends block_base {
             $params['courseendtime'] = strtotime('+1 day', $fromform->sfcourseendtime);
         } else {
             $params['courseendtime'] = 9999999999;
+        }
+
+        // Check if the global setting to show additional bookings is active.
+        if (!empty(get_config('block_booking', 'userinfofield'))) {
+            // We only need to set the param, if the global setting is active.
+            $params['bookedmodulesonly'] = $fromform->sfbookedmodulesonly;
         }
 
         return $params;

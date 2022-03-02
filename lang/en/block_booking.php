@@ -38,6 +38,7 @@ $string['createdbywunderbyte'] = 'Developed with &#128156; &nbsp;by <a href="htt
 // File: search_form.mustache.
 $string['sfcourse'] = 'Course';
 $string['sfbookingoption'] = 'Booking option';
+$string['sfbookedmodulesonly'] = 'Booked modules only';
 $string['sflocation'] = 'Location';
 $string['sfteacher'] = 'Teacher';
 $string['sffromcheckbox'] = 'Search from date...';

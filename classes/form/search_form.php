@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir.'/formslib.php');
 
+use context_system;
 use moodleform;
 
 /**
@@ -40,6 +41,19 @@ use moodleform;
  */
 class search_form extends moodleform {
 
+    /** @var context_system $context The system context. */
+    public $context = null;
+
+    /**
+     * Constructor method.
+     *
+     * @param string $name
+     */
+    public function __construct(context_system $context) {
+        $this->context = $context;
+        parent::__construct();
+    }
+
     /**
      * Defines the form fields.
      */
@@ -47,6 +61,9 @@ class search_form extends moodleform {
         global $DB;
 
         $mform = $this->_form;
+
+        // Determine if current user is a student or not.
+        $isstudent = !has_capability('block/booking:managesitebookingoptions', $this->context);
 
         // Id can be from course or mod, so we just get it from url param.
         $id = optional_param('id', 0, PARAM_INT);
@@ -64,6 +81,16 @@ class search_form extends moodleform {
         $mform->addElement('header', 'sfmorefilters', get_string('sfmorefilters', 'block_booking'));
         $mform->setType('sfmorefilters', PARAM_TEXT);
         $mform->setExpanded('sfmorefilters', false);
+
+        // Check if the global setting to show additional bookings is active...
+        // ...and only show for students.
+        if (!empty(get_config('block_booking', 'userinfofield')) && $isstudent) {
+            // We only need an option to turn this off, if the global setting is active.
+            $mform->addElement('checkbox', 'sfbookedmodulesonly', get_string('sfbookedmodulesonly', 'block_booking'),
+                '', array('group' => 1), array(0, 1));
+            $mform->setDefault('sfbookedmodulesonly', 0);
+            $mform->setType('sfbookedmodulesonly', PARAM_INT);
+        }
 
         // First entry is selected by default, so let's make it empty.
         $locations = ['' => ''];
