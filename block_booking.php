@@ -447,7 +447,7 @@ class block_booking extends block_base {
         }
 
         // Check if the global setting to show additional bookings is active.
-        if (!empty(get_config('block_booking', 'userinfofield'))) {
+        if (!empty(get_config('block_booking', 'userinfofield')) && isset($fromform->sfbookedmodulesonly)) {
             // We only need to set the param, if the global setting is active.
             $params['bookedmodulesonly'] = $fromform->sfbookedmodulesonly;
         }
