@@ -72,10 +72,34 @@ class search_form extends moodleform {
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('text', 'sfcourse', get_string('sfcourse', 'block_booking'));
+        // First entry is selected by default, so let's make it empty.
+        $coursenames = ['' => ''];
+        // Get all course names from DB.
+        $coursenamessql = "SELECT DISTINCT fullname from {course}";
+        if ($records = $DB->get_records_sql($coursenamessql)) {
+            // Add every course name to the array (both as key and value so autocomplete will work).
+            foreach ($records as $record) {
+                $coursenames[$record->fullname] = $record->fullname;
+            }
+        }
+        $acparams = ['tags' => true, 'multiple' => false];
+        $mform->addElement('autocomplete', 'sfcourse', get_string('sfcourse', 'block_booking'),
+            $coursenames, $acparams);
         $mform->setType('sfcourse', PARAM_TEXT);
 
-        $mform->addElement('text', 'sfbookingoption', get_string('sfbookingoption', 'block_booking'));
+        // First entry is selected by default, so let's make it empty.
+        $optionnames = ['' => ''];
+        // Get all option names from DB.
+        $optionnamessql = "SELECT DISTINCT text from {booking_options}";
+        if ($records = $DB->get_records_sql($optionnamessql)) {
+            // Add every option name to the array (both as key and value so autocomplete will work).
+            foreach ($records as $record) {
+                $optionnames[$record->text] = $record->text;
+            }
+        }
+        $acparams = ['tags' => true, 'multiple' => false];
+        $mform->addElement('autocomplete', 'sfbookingoption', get_string('sfbookingoption', 'block_booking'),
+            $optionnames, $acparams);
         $mform->setType('sfbookingoption', PARAM_TEXT);
 
         $mform->addElement('header', 'sfmorefilters', get_string('sfmorefilters', 'block_booking'));
