@@ -85,9 +85,6 @@ class searchresults_student_view implements renderable, templatable {
                 }
             }
 
-            // Remove identifier key and separator if necessary.
-            booking_utils::transform_unique_bookingoption_name_to_display_name($objectentry);
-
             // Prepare date string.
             if ($objectentry->coursestarttime != 0 && $objectentry->courseendtime != 0) {
                 $objectentry->datestring = userdate($objectentry->coursestarttime, get_string('strftimedatetime'))
