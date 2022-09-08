@@ -98,6 +98,9 @@ class block_booking extends block_base {
 
             $params = self::get_search_params_from_form($fromform);
 
+            set_user_preference('sfcoursestarttime', $params['coursestarttime']);
+            set_user_preference('sfcourseendtime', $params['courseendtime']);
+
             // Create the actual table mod differently for students or teachers.
             if ($isstudent) {
                 list($sqldata, $inactivecoursesids) = self::search_booking_options_student_get_sqldata($params);

@@ -62,6 +62,11 @@ class search_form extends moodleform {
 
         $mform = $this->_form;
 
+        $startendparams = [
+            'sfcoursestarttime' => get_user_preferences('sfcoursestarttime'),
+            'sfcourseendtime' => get_user_preferences('sfcourseendtime')
+        ];
+
         // Determine if current user is a student or not.
         $isstudent = !has_capability('block/booking:managesitebookingoptions', $this->context);
 
@@ -92,9 +97,10 @@ class search_form extends moodleform {
         // Get all option names from DB.
         $optionnamessql = "SELECT DISTINCT text
                            FROM {booking_options}
-                           WHERE (courseendtime > :now OR courseendtime = '' OR courseendtime IS NULL)
+                           WHERE (coursestarttime >= :sfcoursestarttime OR coursestarttime = '' OR coursestarttime IS NULL)
+                           AND (courseendtime <= :sfcourseendtime OR courseendtime = '' OR courseendtime IS NULL)
                            AND text <> '' AND text IS NOT NULL";
-        if ($records = $DB->get_records_sql($optionnamessql, ['now' => time()])) {
+        if ($records = $DB->get_records_sql($optionnamessql, $startendparams)) {
             // Add every option name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 $optionnames[$record->text] = $record->text;
@@ -124,9 +130,11 @@ class search_form extends moodleform {
         // Get all locations from options in the future.
         $locationssql = "SELECT DISTINCT location
                         FROM {booking_options}
-                        WHERE (courseendtime > :now OR courseendtime = '' OR courseendtime IS NULL)
+                        WHERE (coursestarttime >= :sfcoursestarttime OR coursestarttime = '' OR coursestarttime IS NULL)
+                        AND (courseendtime <= :sfcourseendtime OR courseendtime = '' OR courseendtime IS NULL)
                         AND location <> '' AND location IS NOT NULL";
-        if ($records = $DB->get_records_sql($locationssql, ['now' => time()])) {
+
+        if ($records = $DB->get_records_sql($locationssql, $startendparams)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 $locations[$record->location] = $record->location;
