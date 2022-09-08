@@ -92,7 +92,7 @@ class search_form extends moodleform {
         // Get all option names from DB.
         $optionnamessql = "SELECT DISTINCT text
                            FROM {booking_options}
-                           WHERE courseendtime > :now
+                           WHERE (courseendtime > :now OR courseendtime = '' OR courseendtime IS NULL)
                            AND text <> '' AND text IS NOT NULL";
         if ($records = $DB->get_records_sql($optionnamessql, ['now' => time()])) {
             // Add every option name to the array (both as key and value so autocomplete will work).
@@ -124,7 +124,7 @@ class search_form extends moodleform {
         // Get all locations from options in the future.
         $locationssql = "SELECT DISTINCT location
                         FROM {booking_options}
-                        WHERE courseendtime > :now
+                        WHERE (courseendtime > :now OR courseendtime = '' OR courseendtime IS NULL)
                         AND location <> '' AND location IS NOT NULL";
         if ($records = $DB->get_records_sql($locationssql, ['now' => time()])) {
             // Add every location to the array (both as key and value so autocomplete will work).
@@ -136,6 +136,12 @@ class search_form extends moodleform {
         $mform->addElement('autocomplete', 'sflocation', get_string('sflocation', 'block_booking'),
             $locations, $options);
         $mform->setType('sflocation', PARAM_TEXT);
+
+        // First entry is selected by default, so let's make it empty.
+        $options = ['tags' => false, 'multiple' => true];
+        $mform->addElement('autocomplete', 'sfnonlocation', get_string('sfnonlocation', 'block_booking'),
+            $locations, $options);
+        $mform->setType('sfnonlocation', PARAM_TEXT);
 
         // First entry is selected by default, so let's make it empty.
         $teachers = ['' => ''];

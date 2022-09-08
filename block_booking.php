@@ -262,6 +262,12 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
+        // Generate the part needed for non-location search.
+        list($nonlocationssql, $nonlocationsparams) = self::generate_non_locations_sql($params['nonlocationsarray']);
+        if (!empty($nonlocationsparams)) {
+            $params = array_merge($params, $nonlocationsparams);
+        }
+
         // Generate the "AND..." part needed for teacher search.
         $andteacher = ''; // Empty by default.
         if (!empty($params['teacherid'])) {
@@ -296,6 +302,7 @@ class block_booking extends block_base {
                 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
                 AND LOWER(c.fullname) LIKE LOWER(:course)
                 $inlocationssql
+                $nonlocationssql
                 AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
                 (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
                 $andcourseid
@@ -360,6 +367,12 @@ class block_booking extends block_base {
             $params = array_merge($params, $inlocationsparams);
         }
 
+        // Generate the part needed for non-location search.
+        list($nonlocationssql, $nonlocationsparams) = self::generate_non_locations_sql($params['nonlocationsarray']);
+        if (!empty($nonlocationsparams)) {
+            $params = array_merge($params, $nonlocationsparams);
+        }
+
         // Generate the "AND..." part needed for teacher search.
         $andteacher = ''; // Empty by default.
         if (!empty($params['teacherid'])) {
@@ -370,6 +383,7 @@ class block_booking extends block_base {
         $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
+            $nonlocationssql .
             "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
             "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)) " .
             $andteacher .
@@ -408,6 +422,29 @@ class block_booking extends block_base {
     }
 
     /**
+     * Helper function to generate the
+     * "AND bo.location NOT IN (:loc1, :loc2, ...)" SQL part
+     * and the according params.
+     *
+     * @param array $nonlocationsarray an array of (negative) location strings
+     * @return array the SQL part needed (string) and the params needed (array)
+     */
+    private static function generate_non_locations_sql(array $nonlocationsarray): array {
+        global $DB;
+
+        // Generate the locations SQL part.
+        if (!empty($nonlocationsarray)) {
+            list($nonlocationssql, $nonlocationsparams) = $DB->get_in_or_equal($nonlocationsarray, SQL_PARAMS_NAMED, 'nonloc');
+            $nonlocationssql = "AND bo.location NOT " . $nonlocationssql;
+        } else {
+            $nonlocationssql = "";
+            $nonlocationsparams = [];
+        }
+
+        return [$nonlocationssql, $nonlocationsparams];
+    }
+
+    /**
      * This will tell Moodle that the block has a settings.php.
      * @return true
      */
@@ -429,6 +466,7 @@ class block_booking extends block_base {
         $params['course'] = "%$fromform->sfcourse%";
         $params['bookingoption'] = "%$fromform->sfbookingoption%";
         $params['locationsarray'] = $fromform->sflocation;
+        $params['nonlocationsarray'] = $fromform->sfnonlocation;
         $params['teacherid'] = $fromform->sfteacher;
 
         // Only use from-date if checkbox is active.

@@ -40,6 +40,7 @@ $string['sfcourse'] = 'Kurs';
 $string['sfbookingoption'] = 'Buchungsoption';
 $string['sfbookedmodulesonly'] = 'Nur gebuchte Module';
 $string['sflocation'] = 'Ort';
+$string['sfnonlocation'] = 'Nicht-Ort';
 $string['sfteacher'] = 'Trainer/in';
 $string['sffromcheckbox'] = 'Ab Datum suchen...';
 $string['sfuntilcheckbox'] = 'Bis zu Datum suchen...';

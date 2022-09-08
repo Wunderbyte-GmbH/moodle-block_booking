@@ -142,11 +142,13 @@
     font-size: small;
 }
 
-.block_booking #fitem_id_sflocation label {
+.block_booking #fitem_id_sflocation label,
+.block_booking #fitem_id_sfnonlocation label {
     font-size: small;
 }
 
-.block_booking #fitem_id_sflocation .col-form-label {
+.block_booking #fitem_id_sflocation .col-form-label,
+.block_booking #fitem_id_sfnonlocation .col-form-label {
     padding-left: 0;
 }
 
