@@ -90,8 +90,11 @@ class search_form extends moodleform {
         // First entry is selected by default, so let's make it empty.
         $optionnames = ['' => ''];
         // Get all option names from DB.
-        $optionnamessql = "SELECT DISTINCT text from {booking_options}";
-        if ($records = $DB->get_records_sql($optionnamessql)) {
+        $optionnamessql = "SELECT DISTINCT text
+                           FROM {booking_options}
+                           WHERE courseendtime > :now
+                           AND text <> '' AND text IS NOT NULL";
+        if ($records = $DB->get_records_sql($optionnamessql, ['now' => time()])) {
             // Add every option name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 $optionnames[$record->text] = $record->text;
@@ -118,9 +121,12 @@ class search_form extends moodleform {
 
         // First entry is selected by default, so let's make it empty.
         $locations = ['' => ''];
-        // Get all locations from DB.
-        $locationssql = "SELECT DISTINCT location from {booking_options}";
-        if ($records = $DB->get_records_sql($locationssql)) {
+        // Get all locations from options in the future.
+        $locationssql = "SELECT DISTINCT location
+                        FROM {booking_options}
+                        WHERE courseendtime > :now
+                        AND location <> '' AND location IS NOT NULL";
+        if ($records = $DB->get_records_sql($locationssql, ['now' => time()])) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 $locations[$record->location] = $record->location;
