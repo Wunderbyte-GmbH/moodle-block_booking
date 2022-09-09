@@ -144,7 +144,7 @@ class block_booking extends block_base {
 
         // Define the list of columns to show.
         $columns = [
-            'course', 'text', 'coursestarttime', 'courseendtime', 'location', 'teacher', 'participants',
+            'course', 'text', 'coursestarttime', 'location', 'teacher', 'participants',
             'waitinglist', 'manageresponses', 'link'
         ];
         $resultstable->define_columns($columns);
