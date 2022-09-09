@@ -144,7 +144,7 @@ class block_booking extends block_base {
 
         // Define the list of columns to show.
         $columns = [
-            'text', 'course', 'coursestarttime', 'courseendtime', 'location', 'teacher', 'participants',
+            'course', 'text', 'coursestarttime', 'courseendtime', 'location', 'teacher', 'participants',
             'waitinglist', 'manageresponses', 'link'
         ];
         $resultstable->define_columns($columns);
@@ -310,7 +310,7 @@ class block_booking extends block_base {
                 (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2))
                 $andcourseid
                 $andteacher
-                ORDER BY bo.coursestarttime ASC";
+                ORDER BY b.course ASC, bo.text ASC, bo.coursestarttime ASC";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
@@ -390,7 +390,7 @@ class block_booking extends block_base {
             "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
             "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)) " .
             $andteacher .
-            " ORDER BY bo.coursestarttime ASC";
+            " ORDER BY b.course ASC, bo.text ASC, bo.coursestarttime ASC";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
