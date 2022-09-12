@@ -27,6 +27,7 @@ namespace block_booking\output;
 use coding_exception;
 use dml_exception;
 use mod_booking\booking_utils;
+use mod_booking\optiondates_handler;
 use moodle_exception;
 use moodle_url;
 use renderer_base;
@@ -85,11 +86,8 @@ class searchresults_student_view implements renderable, templatable {
                 }
             }
 
-            // Prepare date string.
-            if ($objectentry->coursestarttime != 0 && $objectentry->courseendtime != 0) {
-                $objectentry->datestring = userdate($objectentry->coursestarttime, get_string('strftimedatetime'))
-                    . ' - ' . userdate($objectentry->courseendtime, get_string('strftimedatetime'));
-            }
+            // Prepare date strings.
+            $objectentry->datestrings = optiondates_handler::return_array_of_sessions_simple($objectentry->optionid);
 
             if (in_array($objectentry->courseid, $inactivecoursesids)) {
 

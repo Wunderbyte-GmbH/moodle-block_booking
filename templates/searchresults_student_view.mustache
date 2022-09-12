@@ -98,9 +98,16 @@
                                 </div>
                                 <p class="mb-1">{{#str}} sfcourse, block_booking {{/str}}: {{course}}</p>
                             </div>
-                            {{#datestring}}
-                                <p class="mb-1">{{datestring}}</p>
-                            {{/datestring}}
+                            <a data-toggle="collapse" href="#optiondates{{{optionid}}}" role="button" aria-expanded="false" aria-controls="optiondates{{{optionid}}}">
+                                <small><i class="fa fa-calendar"></i> {{#str}}showdates, mod_booking{{/str}}</small>
+                            </a>
+                            <div class="collapse" id="optiondates{{{optionid}}}">
+                                <small>
+                                {{#datestrings}}
+                                    <div>{{{datestring}}}</div>
+                                {{/datestrings}}
+                                </small>
+                            </div>
                             {{#location}}
                                 <div><small>{{#str}} sflocation, block_booking {{/str}}: {{location}}</small></div>
                             {{/location}}
