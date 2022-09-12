@@ -90,7 +90,8 @@ class block_booking extends block_base {
         $this->content->text = '';
 
         // The search form.
-        $data = new search_form_container($searchformhtml); // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
+        // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
+        $data = new search_form_container($searchformhtml);
         $this->content->text .= $output->render_search_form_container($data);
 
         // Process the form data after submit button has been pressed.
@@ -166,6 +167,9 @@ class block_booking extends block_base {
         // Write the results table to buffer and store HTML in a variable.
         ob_start();
         $resultstable->define_baseurl($baseurl);
+
+        $resultstable->define_sortablecolumns(['course', 'text', 'coursestarttime', 'location']);
+
         $resultstable->out(40, true);
         $resultstablehtml = ob_get_clean();
 
@@ -331,11 +335,32 @@ class block_booking extends block_base {
         // If no form data can be fetched an empty object will be returned.
         $sqldata = [];
 
-        // Create all parts of the SQL select query.
-        $sqldata['fields'] = "DISTINCT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course,
-            bo.location, bo.coursestarttime, bo.courseendtime, bo.description, p.participants, w.waitinglist";
+        // Generate the part needed for multi-location search.
+        list($inlocationssql, $inlocationsparams) = self::generate_in_locations_sql($params['locationsarray']);
+        if (!empty($inlocationsparams)) {
+            $params = array_merge($params, $inlocationsparams);
+        }
 
-        $sqldata['from'] = "{booking_options} bo
+        // Generate the part needed for non-location search.
+        list($nonlocationssql, $nonlocationsparams) = self::generate_non_locations_sql($params['nonlocationsarray']);
+        if (!empty($nonlocationsparams)) {
+            $params = array_merge($params, $nonlocationsparams);
+        }
+
+        // Generate the "AND..." part needed for teacher search.
+        $andteacher = ''; // Empty by default.
+        if (!empty($params['teacherid'])) {
+            $andteacher = 'AND bt.userid = :teacherid';
+            $params = array_merge($params, ['teacherid' => $params['teacherid']]);
+        }
+
+        // Create all parts of the SQL select query.
+        $sqldata['fields'] = "s.optionid, s.cmid, s.bookingid, s.text, s.courseid, s.course,
+            s.location, s.coursestarttime, s.courseendtime, s.description, s.participants, s.waitinglist";
+
+        $sqldata['from'] = "(SELECT DISTINCT bo.id optionid, s1.cmid, bo.bookingid, bo.text, b.course courseid, c.fullname course,
+            bo.location, bo.coursestarttime, bo.courseendtime, bo.description, p.participants, w.waitinglist
+            FROM {booking_options} bo
             LEFT JOIN {booking} b
             ON b.id = bo.bookingid
             LEFT JOIN {course} c
@@ -362,35 +387,17 @@ class block_booking extends block_base {
             LEFT JOIN {booking_optiondates} bod
             ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
             LEFT JOIN {booking_teachers} bt
-            ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid";
-
-        // Generate the part needed for multi-location search.
-        list($inlocationssql, $inlocationsparams) = self::generate_in_locations_sql($params['locationsarray']);
-        if (!empty($inlocationsparams)) {
-            $params = array_merge($params, $inlocationsparams);
-        }
-
-        // Generate the part needed for non-location search.
-        list($nonlocationssql, $nonlocationsparams) = self::generate_non_locations_sql($params['nonlocationsarray']);
-        if (!empty($nonlocationsparams)) {
-            $params = array_merge($params, $nonlocationsparams);
-        }
-
-        // Generate the "AND..." part needed for teacher search.
-        $andteacher = ''; // Empty by default.
-        if (!empty($params['teacherid'])) {
-            $andteacher = 'AND bt.userid = :teacherid';
-            $params = array_merge($params, ['teacherid' => $params['teacherid']]);
-        }
-
-        $sqldata['where'] = "bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
+            ON bo.bookingid = bt.bookingid AND bo.id = bt.optionid
+            WHERE bo.bookingid <> 0 AND s1.visible <> 0 AND LOWER(bo.text) LIKE LOWER(:bookingoption)
             AND LOWER(c.fullname) LIKE LOWER(:course) " .
             $inlocationssql .
             $nonlocationssql .
             "AND ((bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) " .
             "OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)) " .
             $andteacher .
-            " ORDER BY b.course ASC, bo.text ASC, bo.coursestarttime ASC";
+            " ORDER BY b.course ASC, bo.text ASC, bo.coursestarttime ASC) s";
+
+        $sqldata['where'] = "1=1";
 
         // Params cannot be used twice, so we need to add them again.
         $params = array_merge($params, ['coursestarttime2' => $params['coursestarttime'],
