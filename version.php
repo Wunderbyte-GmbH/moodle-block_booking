@@ -25,13 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022030201; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version = 2022091200;
 $plugin->release = '3.3.5';
 $plugin->supported = [39, 311];
 $plugin->component = 'block_booking';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2019111801;
 $plugin->dependencies = array(
-                'mod_booking' => 2021112901,
+                'mod_booking' => 2021112908,
                 'local_wunderbyte_table' => 2021102800
 );
