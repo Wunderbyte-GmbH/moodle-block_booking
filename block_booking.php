@@ -426,8 +426,11 @@ class block_booking extends block_base {
 
     /**
      * Helper function to generate the
-     * "AND bo.location NOT IN (:loc1, :loc2, ...)" SQL part
+     * "AND bo.location NOT IN (:nonloc1, :nonloc2, ...)" SQL part
      * and the according params.
+     *
+     * NOTE: if there is only one argument, we need to generate
+     * bo.location <> :nonloc1
      *
      * @param array $nonlocationsarray an array of (negative) location strings
      * @return array the SQL part needed (string) and the params needed (array)
@@ -438,7 +441,11 @@ class block_booking extends block_base {
         // Generate the locations SQL part.
         if (!empty($nonlocationsarray)) {
             list($nonlocationssql, $nonlocationsparams) = $DB->get_in_or_equal($nonlocationsarray, SQL_PARAMS_NAMED, 'nonloc');
-            $nonlocationssql = "AND bo.location NOT " . $nonlocationssql;
+            if (count($nonlocationsarray) == 1) {
+                $nonlocationssql = str_replace('=', 'AND bo.location !=', $nonlocationssql);
+            } else {
+                $nonlocationssql = "AND bo.location NOT " . $nonlocationssql;
+            }
         } else {
             $nonlocationssql = "";
             $nonlocationsparams = [];
