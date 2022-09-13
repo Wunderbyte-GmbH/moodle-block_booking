@@ -168,7 +168,12 @@ class block_booking extends block_base {
         ob_start();
         $resultstable->define_baseurl($baseurl);
 
-        $resultstable->define_sortablecolumns(['course', 'text', 'coursestarttime', 'location']);
+        $resultstable->define_sortablecolumns([
+            'course' => get_string('bstcourse', 'mod_booking'),
+            'text' => get_string('bsttext', 'mod_booking'),
+            'coursestarttime' => get_string('bstcoursestarttime', 'mod_booking'),
+            'location' => get_string('bstlocation', 'mod_booking')
+        ]);
 
         $resultstable->out(40, true);
         $resultstablehtml = ob_get_clean();
