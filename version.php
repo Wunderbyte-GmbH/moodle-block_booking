@@ -33,5 +33,5 @@ $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2019111801;
 $plugin->dependencies = array(
                 'mod_booking' => 2021112908,
-                'local_wunderbyte_table' => 2021102800
+                'local_wunderbyte_table' => 2022091900
 );
