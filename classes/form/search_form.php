@@ -62,11 +62,6 @@ class search_form extends moodleform {
 
         $mform = $this->_form;
 
-        $startendparams = [
-            'sfcoursestarttime' => get_user_preferences('sfcoursestarttime'),
-            'sfcourseendtime' => get_user_preferences('sfcourseendtime')
-        ];
-
         // Determine if current user is a student or not.
         $isstudent = !has_capability('block/booking:managesitebookingoptions', $this->context);
 
@@ -97,10 +92,8 @@ class search_form extends moodleform {
         // Get all option names from DB.
         $optionnamessql = "SELECT DISTINCT text
                            FROM {booking_options}
-                           WHERE (coursestarttime >= :sfcoursestarttime OR coursestarttime = '' OR coursestarttime IS NULL)
-                           AND (courseendtime <= :sfcourseendtime OR courseendtime = '' OR courseendtime IS NULL)
-                           AND text <> '' AND text IS NOT NULL";
-        if ($records = $DB->get_records_sql($optionnamessql, $startendparams)) {
+                           WHERE text <> '' AND text IS NOT NULL";
+        if ($records = $DB->get_records_sql($optionnamessql)) {
             // Add every option name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 $optionnames[$record->text] = $record->text;
@@ -134,6 +127,12 @@ class search_form extends moodleform {
                         AND (courseendtime <= :sfcourseendtime OR courseendtime = '' OR courseendtime IS NULL)
                         AND location <> '' AND location IS NOT NULL";
 
+        // Only locations that matched the previous search will be added to the dropdown.
+        $startendparams = [
+            'sfcoursestarttime' => get_user_preferences('sfcoursestarttime'),
+            'sfcourseendtime' => get_user_preferences('sfcourseendtime')
+        ];
+
         if ($records = $DB->get_records_sql($locationssql, $startendparams)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
@@ -146,9 +145,21 @@ class search_form extends moodleform {
         $mform->setType('sflocation', PARAM_TEXT);
 
         // First entry is selected by default, so let's make it empty.
+        $nonlocations = ['' => ''];
+        // Get all locations from options in the future.
+        $nonlocationssql = "SELECT DISTINCT location AS nonlocation
+                        FROM {booking_options}
+                        WHERE location <> '' AND location IS NOT NULL";
+
+        if ($records = $DB->get_records_sql($nonlocationssql)) {
+            // Add every location to the array (both as key and value so autocomplete will work).
+            foreach ($records as $record) {
+                $nonlocations[$record->nonlocation] = $record->nonlocation;
+            }
+        }
         $options = ['tags' => false, 'multiple' => true];
         $mform->addElement('autocomplete', 'sfnonlocation', get_string('sfnonlocation', 'block_booking'),
-            $locations, $options);
+            $nonlocations, $options);
         $mform->setType('sfnonlocation', PARAM_TEXT);
 
         // First entry is selected by default, so let's make it empty.

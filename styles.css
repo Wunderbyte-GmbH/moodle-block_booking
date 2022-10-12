@@ -114,6 +114,16 @@
     border-radius: 5px;
 }
 
+#booking-block-modal th.course,
+#booking-block-modal th.text,
+#booking-block-modal th.coursestarttime,
+#booking-block-modal th.location,
+#booking-block-modal th.participants {
+    color: royalblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .block_booking #id_sfmorefilters a.fheader {
     font-size: 1rem;
 }
