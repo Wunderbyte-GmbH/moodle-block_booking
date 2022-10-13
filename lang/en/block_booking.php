@@ -57,6 +57,7 @@ $string['onwaitinglist'] = 'You are on the waiting list.';
 $string['notenrolled'] = 'Your are not enrolled in this course.';
 $string['modalheadertitle'] = '{$a->count} booking options found';
 $string['btnshow'] = 'Show';
+$string['showhidedates'] = 'Show / hide dates...';
 
 // File: settings.php.
 $string['settingsheader'] = 'Bookings Quickfinder Settings';

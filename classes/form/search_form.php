@@ -49,8 +49,9 @@ class search_form extends moodleform {
      *
      * @param string $name
      */
-    public function __construct(context_system $context) {
+    public function __construct(context_system $context, array $params = []) {
         $this->context = $context;
+        $this->params = $params;
         parent::__construct();
     }
 
@@ -121,17 +122,36 @@ class search_form extends moodleform {
         // First entry is selected by default, so let's make it empty.
         $locations = ['' => ''];
         // Get all locations from options in the future.
-        $locationssql = "SELECT DISTINCT location
-                        FROM {booking_options}
-                        WHERE (coursestarttime >= :sfcoursestarttime OR coursestarttime = '' OR coursestarttime IS NULL)
-                        AND (courseendtime <= :sfcourseendtime OR courseendtime = '' OR courseendtime IS NULL)
+        $locationssql = "SELECT DISTINCT bo.location
+                        FROM {booking_options} bo
+                        LEFT JOIN {booking_optiondates} bod
+                        ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
+                        WHERE (
+                           (bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime)
+                        OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)
+                        OR bo.coursestarttime = ''
+                        OR bo.coursestarttime IS NULL
+                        OR bo.courseendtime = ''
+                        OR bo.courseendtime IS NULL)
                         AND location <> '' AND location IS NOT NULL";
 
-        // Only locations that matched the previous search will be added to the dropdown.
-        $startendparams = [
-            'sfcoursestarttime' => get_user_preferences('sfcoursestarttime'),
-            'sfcourseendtime' => get_user_preferences('sfcourseendtime')
-        ];
+        // Only locations that matched the search will be added to the dropdown.
+        $startendparams = [];
+        if (!empty($this->params['coursestarttime'])) {
+            $startendparams['coursestarttime'] = $this->params['coursestarttime'];
+            // Params cannot be used twice, so we need to add them again.
+            $startendparams['coursestarttime2'] = $this->params['coursestarttime'];
+        } else {
+            $startendparams['coursestarttime'] = 0;
+            $startendparams['coursestarttime2'] = 0;
+        }
+        if (!empty($this->params['courseendtime'])) {
+            $startendparams['courseendtime'] = strtotime('+1 day', $this->params['courseendtime']);
+            $startendparams['courseendtime2'] = $startendparams['courseendtime'];
+        } else {
+            $startendparams['courseendtime'] = 9999999999;
+            $startendparams['courseendtime2'] = 9999999999;
+        }
 
         if ($records = $DB->get_records_sql($locationssql, $startendparams)) {
             // Add every location to the array (both as key and value so autocomplete will work).

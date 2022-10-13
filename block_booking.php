@@ -76,12 +76,6 @@ class block_booking extends block_base {
         // Initialize the search form.
         $searchform = new search_form($context);
 
-        // Collect the search form HTML in a buffer.
-        ob_start();
-        $searchform->display();
-        // And store it in a variable.
-        $searchformhtml = ob_get_clean();
-
         // Get the renderer for this plugin.
         $output = $this->page->get_renderer('block_booking');
 
@@ -89,18 +83,13 @@ class block_booking extends block_base {
         $this->content = new stdClass();
         $this->content->text = '';
 
-        // The search form.
-        // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
-        $data = new search_form_container($searchformhtml);
-        $this->content->text .= $output->render_search_form_container($data);
-
         // Process the form data after submit button has been pressed.
         if ($fromform = $searchform->get_data()) {
 
             $params = self::get_search_params_from_form($fromform);
 
-            set_user_preference('sfcoursestarttime', $params['coursestarttime']);
-            set_user_preference('sfcourseendtime', $params['courseendtime']);
+            $searchform = new search_form($context, $params);
+            $searchform->set_data($fromform);
 
             // Create the actual table mod differently for students or teachers.
             if ($isstudent) {
@@ -120,6 +109,17 @@ class block_booking extends block_base {
                 $this->content->text .= $output->render_searchresults_manager_view($data);
             }
         }
+
+        // Collect the search form HTML in a buffer.
+        ob_start();
+        $searchform->display();
+        // And store it in a variable.
+        $searchformhtml = ob_get_clean();
+
+        // The search form.
+        // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
+        $data = new search_form_container($searchformhtml);
+        $this->content->text .= $output->render_search_form_container($data);
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.
         $this->page->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',

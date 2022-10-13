@@ -57,6 +57,7 @@ $string['onwaitinglist'] = 'Sie sind auf der Warteliste.';
 $string['notenrolled'] = 'Sie sind in diesen Kurs nicht eingeschrieben.';
 $string['modalheadertitle'] = '{$a->count} Buchungsoptionen gefunden';
 $string['btnshow'] = 'Anzeigen';
+$string['showhidedates'] = 'Termine anzeigen / verstecken...';
 
 // File: settings.php.
 $string['settingsheader'] = 'Block "Buchungen suchen (Schnellsuche)" - Einstellungen';
