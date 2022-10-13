@@ -18,19 +18,19 @@
  * Version information
  *
  * @package    block_booking
- * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
- * @copyright  2014-2022 https://www.wunderbyte.at
+ * @author     David Bogner, Bernhard Fischer
+ * @copyright  Wunderbyte GmbH 2014-2022 https://www.wunderbyte.at <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022091900;
-$plugin->release = '3.4.0';
+$plugin->version = 2022101300;
+$plugin->release = '3.4.1';
 $plugin->component = 'block_booking';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires  = 2019111801;
-$plugin->dependencies = array(
-                'mod_booking' => 2021112909,
-                'local_wunderbyte_table' => 2022091900
-);
+$plugin->dependencies = [
+    'mod_booking' => 2021112909,
+    'local_wunderbyte_table' => 2022092200
+];
