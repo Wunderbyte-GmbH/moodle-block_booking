@@ -66,6 +66,10 @@ class block_booking extends block_base {
         // Set system context.
         $context = context_system::instance();
 
+        // Initialize.
+        $renderedstudentview = '';
+        $renderedmanagerview = '';
+
         // Determine if current user is a student or not.
         $isstudent = !has_capability('block/booking:managesitebookingoptions', $context);
 
@@ -97,7 +101,7 @@ class block_booking extends block_base {
                 // Show search results for students.
                 $results = $this->search_booking_options_student_view($sqldata);
                 $data = new searchresults_student_view($results, $inactivecoursesids);
-                $this->content->text .= $output->render_searchresults_student_view($data);
+                $renderedstudentview = $output->render_searchresults_student_view($data);
             } else {
                 // Execute the search.
                 $sqldata = self::search_booking_options_manager_get_sqldata($params);
@@ -106,7 +110,7 @@ class block_booking extends block_base {
                 // Use template on table.
                 $data = new searchresults_manager_view($resultstablehtml, $count);
                 // Pass the rendered html to content->text.
-                $this->content->text .= $output->render_searchresults_manager_view($data);
+                $renderedmanagerview = $output->render_searchresults_manager_view($data);
             }
         }
 
@@ -119,7 +123,14 @@ class block_booking extends block_base {
         // The search form.
         // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
         $data = new search_form_container($searchformhtml);
-        $this->content->text .= $output->render_search_form_container($data);
+        $renderedcontainer = $output->render_search_form_container($data);
+
+        // Now build the actual content.
+        if ($isstudent) {
+            $this->content->text .= $renderedcontainer . $renderedstudentview;
+        } else {
+            $this->content->text .= $renderedcontainer . $renderedmanagerview;
+        }
 
         // Call JS to set pageurl. This is needed, in order not to loose course id.
         $this->page->requires->js_call_amd('block_booking/actions', 'setpageurlwithjs',
