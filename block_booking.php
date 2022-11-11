@@ -154,6 +154,9 @@ class block_booking extends block_base {
 
         $resultstable = new bookingoptions_simple_table('block_booking_resultstable');
 
+        // Allow download (export) of table.
+        $resultstable->showdownloadbutton = true;
+
         // Define the list of columns to show.
         $columns = [
             'course', 'text', 'coursestarttime', 'location', 'teacher', 'participants',
