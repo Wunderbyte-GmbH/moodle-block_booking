@@ -177,13 +177,10 @@ class block_booking extends block_base {
 
         // As it seems, we do not need any URL params for this to work.
         $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php");
+        $resultstable->define_baseurl($baseurl);
 
         // Write the results table to buffer and store HTML in a variable.
-        ob_start();
-        $resultstable->define_baseurl($baseurl);
-        $resultstable->sortable(true);
-        $resultstable->out(40, true);
-        $resultstablehtml = ob_get_clean();
+        $resultstablehtml = $resultstable->outhtml(40, true);
 
         $sql = 'SELECT ' . $sqldata['fields'] . ' FROM ' . $sqldata['from'] . ' WHERE '. $sqldata['where'];
 

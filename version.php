@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022101301;
+$plugin->version = 2022101302;
 $plugin->release = '3.4.2';
 $plugin->component = 'block_booking';
 $plugin->maturity = MATURITY_STABLE;
