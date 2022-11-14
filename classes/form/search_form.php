@@ -80,7 +80,10 @@ class search_form extends moodleform {
         if ($records = $DB->get_records_sql($coursenamessql)) {
             // Add every course name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
-                $coursenames[$record->fullname] = $record->fullname;
+                // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
+                $escapedcoursename = str_replace('"', '\"', $record->fullname);
+                $escapedcoursename = str_replace("'", "\'", $escapedcoursename);
+                $coursenames[$escapedcoursename] = $record->fullname;
             }
         }
         $acparams = ['tags' => true, 'multiple' => false];
@@ -97,7 +100,10 @@ class search_form extends moodleform {
         if ($records = $DB->get_records_sql($optionnamessql)) {
             // Add every option name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
-                $optionnames[$record->text] = $record->text;
+                // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
+                $escapedoptionname = str_replace('"', '\"', $record->text);
+                $escapedoptionname = str_replace("'", "\'", $escapedoptionname);
+                $optionnames[$escapedoptionname] = $record->text;
             }
         }
         $acparams = ['tags' => true, 'multiple' => false];
@@ -156,7 +162,10 @@ class search_form extends moodleform {
         if ($records = $DB->get_records_sql($locationssql, $startendparams)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
-                $locations[$record->location] = $record->location;
+                // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
+                $escapedlocationname = str_replace('"', '\"', $record->location);
+                $escapedlocationname = str_replace("'", "\'", $escapedlocationname);
+                $locations[$escapedlocationname] = $record->location;
             }
         }
         $options = ['tags' => false, 'multiple' => true];
@@ -174,7 +183,10 @@ class search_form extends moodleform {
         if ($records = $DB->get_records_sql($nonlocationssql)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
-                $nonlocations[$record->nonlocation] = $record->nonlocation;
+                // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
+                $escapednonlocationname = str_replace('"', '\"', $record->nonlocation);
+                $escapednonlocationname = str_replace("'", "\'", $escapednonlocationname);
+                $nonlocations[$escapednonlocationname] = $record->nonlocation;
             }
         }
         $options = ['tags' => false, 'multiple' => true];
