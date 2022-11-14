@@ -75,8 +75,16 @@ class search_form extends moodleform {
 
         // First entry is selected by default, so let's make it empty.
         $coursenames = ['' => ''];
-        // Get all course names from DB.
-        $coursenamessql = "SELECT DISTINCT fullname from {course}";
+
+        // Get all course names from DB that have at least one booking instance.
+        $coursenamessql = "SELECT DISTINCT c.fullname
+                            FROM {course} c
+                            JOIN {course_modules} cm
+                            ON c.id = cm.course
+                            JOIN {modules} m
+                            ON m.id = cm.module
+                            AND m.name = 'booking'";
+
         if ($records = $DB->get_records_sql($coursenamessql)) {
             // Add every course name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
