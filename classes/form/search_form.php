@@ -103,7 +103,13 @@ class search_form extends moodleform {
                 ON g.name = ud.data
                 AND ud.userid = :userid AND ud.fieldid = :fieldid
                 JOIN {course} c
-                ON c.id = g.courseid";
+                ON c.id = g.courseid
+                JOIN {course_modules} cm
+                ON c.id = cm.course
+                JOIN {modules} m
+                ON m.id = cm.module
+                WHERE m.name = 'booking'
+                AND cm.visible = 1";
 
             $coursenamesparams = [
                 'userid' => $USER->id,
@@ -117,7 +123,8 @@ class search_form extends moodleform {
                 ON c.id = cm.course
                 JOIN {modules} m
                 ON m.id = cm.module
-                AND m.name = 'booking'";
+                WHERE m.name = 'booking'
+                AND cm.visible = 1";
 
             $coursenamesparams = [];
         }
