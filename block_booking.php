@@ -175,9 +175,7 @@ class block_booking extends block_base {
         $resultstable->is_downloading(false); // This is necessary to show the download button.
         $resultstable->set_sql($sqldata['fields'], $sqldata['from'], $sqldata['where'], $sqldata['params']);
 
-        // As it seems, we do not need any URL params for this to work.
-        $baseurl = new moodle_url("$CFG->wwwroot/blocks/booking/block_booking_table.php");
-        $resultstable->define_baseurl($baseurl);
+        $resultstable->define_sortablecolumns(['course', 'text', 'coursestarttime', 'location', 'participants', 'waitinglist']);
 
         // Write the results table to buffer and store HTML in a variable.
         $resultstablehtml = $resultstable->outhtml(40, true);

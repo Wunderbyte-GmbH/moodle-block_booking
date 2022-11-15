@@ -118,10 +118,24 @@
 #booking-block-modal th.text,
 #booking-block-modal th.coursestarttime,
 #booking-block-modal th.location,
-#booking-block-modal th.participants {
+#booking-block-modal th.participants,
+#booking-block-modal th.waitinglist {
     color: royalblue;
     text-decoration: underline;
     cursor: pointer;
+}
+
+#booking-block-modal th.teacher::before,
+#booking-block-modal th.teacher::after,
+#booking-block-modal th.manageresponses::before,
+#booking-block-modal th.manageresponses::after,
+#booking-block-modal th.link::before,
+#booking-block-modal th.link::after {
+    visibility: hidden;
+}
+
+#booking-block-modal .wunderbyte_table_container {
+    gap: 0;
 }
 
 .block_booking #id_sfmorefilters a.fheader {
