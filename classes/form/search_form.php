@@ -35,7 +35,7 @@ use moodleform;
 /**
  * Student search form.
  *
- * @copyright 2021 Wunderbyte GmbH {@link http://www.wunderbyte.at}
+ * @copyright 2022 Wunderbyte GmbH {@link http://www.wunderbyte.at}
  * @author    Bernhard Fischer
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,7 +51,6 @@ class search_form extends moodleform {
      */
     public function __construct(context_system $context, array $params = []) {
         $this->context = $context;
-        $this->params = $params;
         parent::__construct();
     }
 
@@ -59,12 +58,16 @@ class search_form extends moodleform {
      * Defines the form fields.
      */
     public function definition() {
-        global $DB;
+        global $DB, $USER;
 
         $mform = $this->_form;
 
         // Determine if current user is a student or not.
         $isstudent = !has_capability('block/booking:managesitebookingoptions', $this->context);
+
+        // Get the custom user profile field id to show additional courses...
+        // ... and to limit the courses autocomplete in student view.
+        $userinfofieldid = get_config('block_booking', 'userinfofield');
 
         // Id can be from course or mod, so we just get it from url param.
         $id = optional_param('id', 0, PARAM_INT);
@@ -73,19 +76,53 @@ class search_form extends moodleform {
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
+        // For most autocompletes, we only wanto to search into the future.
+        $startendparamsfuture = [
+            'coursestarttime' => strtotime('today midnight'),
+            'coursestarttime2' => strtotime('today midnight'),
+            'courseendtime' => 9999999999,
+            'courseendtime2' => 9999999999
+        ];
+        // WHERE part of SQL checking if either the option of one of the optiondates lies in the future.
+        $whereinfuture = "WHERE (
+            (bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime) OR
+            (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)
+        )";
+
         // First entry is selected by default, so let's make it empty.
         $coursenames = ['' => ''];
 
-        // Get all course names from DB that have at least one booking instance.
-        $coursenamessql = "SELECT DISTINCT c.fullname
-                            FROM {course} c
-                            JOIN {course_modules} cm
-                            ON c.id = cm.course
-                            JOIN {modules} m
-                            ON m.id = cm.module
-                            AND m.name = 'booking'";
+        /* For students, we limit the autocomplete for all courses having a group matching
+        the value of the custom user profile field defined in setting.
+        If the field is not specified in settings or we are in admin view, we get all course
+        names from DB that have at least one booking instance instead. */
+        if (!empty($userinfofieldid) && $isstudent) {
+            $coursenamessql = "SELECT DISTINCT c.fullname
+                FROM m_groups g
+                JOIN {user_info_data} ud
+                ON g.name = ud.data
+                AND ud.userid = :userid AND ud.fieldid = :fieldid
+                JOIN {course} c
+                ON c.id = g.courseid";
 
-        if ($records = $DB->get_records_sql($coursenamessql)) {
+            $coursenamesparams = [
+                'userid' => $USER->id,
+                'fieldid' => $userinfofieldid
+            ];
+        } else {
+            // Get all course names from DB that have at least one booking instance.
+            $coursenamessql = "SELECT DISTINCT c.fullname
+                FROM {course} c
+                JOIN {course_modules} cm
+                ON c.id = cm.course
+                JOIN {modules} m
+                ON m.id = cm.module
+                AND m.name = 'booking'";
+
+            $coursenamesparams = [];
+        }
+
+        if ($records = $DB->get_records_sql($coursenamessql, $coursenamesparams)) {
             // Add every course name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
@@ -101,11 +138,16 @@ class search_form extends moodleform {
 
         // First entry is selected by default, so let's make it empty.
         $optionnames = ['' => ''];
-        // Get all option names from DB.
-        $optionnamessql = "SELECT DISTINCT text
-                           FROM {booking_options}
-                           WHERE text <> '' AND text IS NOT NULL";
-        if ($records = $DB->get_records_sql($optionnamessql)) {
+
+        // Get names of booking options starting in the future or having an optiondate in the future.
+        $optionnamessql = "SELECT DISTINCT bo.text
+            FROM {booking_options} bo
+            LEFT JOIN {booking_optiondates} bod
+            ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
+            $whereinfuture
+            AND text <> '' AND text IS NOT NULL";
+
+        if ($records = $DB->get_records_sql($optionnamessql, $startendparamsfuture)) {
             // Add every option name to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
@@ -125,7 +167,7 @@ class search_form extends moodleform {
 
         // Check if the global setting to show additional bookings is active...
         // ...and only show for students.
-        if (!empty(get_config('block_booking', 'userinfofield')) && $isstudent) {
+        if (!empty($userinfofieldid) && $isstudent) {
             // We only need an option to turn this off, if the global setting is active.
             $mform->addElement('checkbox', 'sfbookedmodulesonly', get_string('sfbookedmodulesonly', 'block_booking'),
                 '', array('group' => 1), array(0, 1));
@@ -140,34 +182,10 @@ class search_form extends moodleform {
                         FROM {booking_options} bo
                         LEFT JOIN {booking_optiondates} bod
                         ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
-                        WHERE (
-                           (bo.coursestarttime >= :coursestarttime AND bo.courseendtime <= :courseendtime)
-                        OR (bod.coursestarttime >= :coursestarttime2 AND bod.courseendtime <= :courseendtime2)
-                        OR bo.coursestarttime = ''
-                        OR bo.coursestarttime IS NULL
-                        OR bo.courseendtime = ''
-                        OR bo.courseendtime IS NULL)
-                        AND location <> '' AND location IS NOT NULL";
+                        $whereinfuture
+                        AND bo.location <> '' AND bo.location IS NOT NULL";
 
-        // Only locations that matched the search will be added to the dropdown.
-        $startendparams = [];
-        if (!empty($this->params['coursestarttime'])) {
-            $startendparams['coursestarttime'] = $this->params['coursestarttime'];
-            // Params cannot be used twice, so we need to add them again.
-            $startendparams['coursestarttime2'] = $this->params['coursestarttime'];
-        } else {
-            $startendparams['coursestarttime'] = 0;
-            $startendparams['coursestarttime2'] = 0;
-        }
-        if (!empty($this->params['courseendtime'])) {
-            $startendparams['courseendtime'] = strtotime('+1 day', $this->params['courseendtime']);
-            $startendparams['courseendtime2'] = $startendparams['courseendtime'];
-        } else {
-            $startendparams['courseendtime'] = 9999999999;
-            $startendparams['courseendtime2'] = 9999999999;
-        }
-
-        if ($records = $DB->get_records_sql($locationssql, $startendparams)) {
+        if ($records = $DB->get_records_sql($locationssql, $startendparamsfuture)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
@@ -184,11 +202,14 @@ class search_form extends moodleform {
         // First entry is selected by default, so let's make it empty.
         $nonlocations = ['' => ''];
         // Get all locations from options in the future.
-        $nonlocationssql = "SELECT DISTINCT location AS nonlocation
-                        FROM {booking_options}
-                        WHERE location <> '' AND location IS NOT NULL";
+        $nonlocationssql = "SELECT DISTINCT bo.location AS nonlocation
+                            FROM {booking_options} bo
+                            LEFT JOIN {booking_optiondates} bod
+                            ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
+                            $whereinfuture
+                            AND bo.location <> '' AND bo.location IS NOT NULL";
 
-        if ($records = $DB->get_records_sql($nonlocationssql)) {
+        if ($records = $DB->get_records_sql($nonlocationssql, $startendparamsfuture)) {
             // Add every location to the array (both as key and value so autocomplete will work).
             foreach ($records as $record) {
                 // Bugfix: Quotes are not supported by autocomplete, so we need to escape them.
@@ -205,11 +226,17 @@ class search_form extends moodleform {
         // First entry is selected by default, so let's make it empty.
         $teachers = ['' => ''];
         // Get all teachers from DB.
-        $teacherssql = "SELECT DISTINCT bt.userid, u.firstname, u.lastname, u.username
+        $teacherssql = "SELECT DISTINCT bt.userid, u.firstname, u.lastname
                         FROM {booking_teachers} bt
                         JOIN {user} u
-                        ON bt.userid = u.id";
-        if ($records = $DB->get_records_sql($teacherssql)) {
+                        ON bt.userid = u.id
+                        JOIN {booking_options} bo
+                        ON bo.id = bt.optionid
+                        LEFT JOIN {booking_optiondates} bod
+                        ON bo.bookingid = bod.bookingid AND bo.id = bod.optionid
+                        $whereinfuture";
+
+        if ($records = $DB->get_records_sql($teacherssql, $startendparamsfuture)) {
             // Add every teacher to the array (userid as key, full name as value).
             foreach ($records as $record) {
                 $teachers[$record->userid] = $record->lastname . ' ' . $record->firstname;

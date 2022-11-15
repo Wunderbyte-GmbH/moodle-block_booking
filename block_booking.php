@@ -21,11 +21,11 @@ use block_booking\output\searchresults_student_view;
 use mod_booking\table\bookingoptions_simple_table;
 
 /**
- * Block base class.
+ * Block base class for Booking Quickfinder Block.
  *
  * @package    block_booking
  * @author     David Bogner, Bernhard Fischer <info@wunderbyte.at>
- * @copyright  2014-2021 https://www.wunderbyte.at
+ * @copyright  2022 https://www.wunderbyte.at
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_booking extends block_base {
@@ -92,7 +92,7 @@ class block_booking extends block_base {
 
             $params = self::get_search_params_from_form($fromform);
 
-            $searchform = new search_form($context, $params);
+            $searchform = new search_form($context);
             $searchform->set_data($fromform);
 
             // Create the actual table mod differently for students or teachers.
@@ -121,7 +121,6 @@ class block_booking extends block_base {
         $searchformhtml = ob_get_clean();
 
         // The search form.
-        // TODO: hier $isstudent übergeben => Filter für booked options nur für student-Ansicht implementieren.
         $data = new search_form_container($searchformhtml);
         $renderedcontainer = $output->render_search_form_container($data);
 
