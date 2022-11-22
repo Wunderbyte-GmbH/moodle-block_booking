@@ -98,7 +98,7 @@ class search_form extends moodleform {
         names from DB that have at least one booking instance instead. */
         if (!empty($userinfofieldid) && $isstudent) {
             $coursenamessql = "SELECT DISTINCT c.fullname
-                FROM m_groups g
+                FROM {groups} g
                 JOIN {user_info_data} ud
                 ON g.name = ud.data
                 AND ud.userid = :userid AND ud.fieldid = :fieldid
