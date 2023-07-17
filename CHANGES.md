@@ -1,3 +1,7 @@
+## Version 4.0.0 (2023071700)
+**Bugfixes:**
+* Bugfix: optiondates_handler of mod_booking was renamed to dates_handler - so fix the reference.
+
 ## Version 3.4.3 (2022111500)
 **Bugfixes:**
 * Fixed export in block_booking, mod_booking and local_wunderbyte_table and changed required versions.
