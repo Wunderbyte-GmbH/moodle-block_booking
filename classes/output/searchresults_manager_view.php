@@ -55,6 +55,11 @@ class searchresults_manager_view implements renderable, templatable {
     public $success = false;
 
     /**
+     * @var string $title
+     */
+    public $title = '';
+
+    /**
      * Constructor to prepare the data for the search results.
      * @param string $searchresultstablehtml
      * @param int $count

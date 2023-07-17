@@ -19,6 +19,7 @@ use block_booking\output\search_form_container;
 use block_booking\output\searchresults_manager_view;
 use block_booking\output\searchresults_student_view;
 use mod_booking\table\bookingoptions_simple_table;
+use block_booking\output\renderer;
 
 /**
  * Block base class for Booking Quickfinder Block.
@@ -81,6 +82,7 @@ class block_booking extends block_base {
         $searchform = new search_form($context);
 
         // Get the renderer for this plugin.
+        /** @var renderer $output */
         $output = $this->page->get_renderer('block_booking');
 
         // The content.

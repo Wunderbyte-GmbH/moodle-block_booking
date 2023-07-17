@@ -27,6 +27,7 @@ namespace block_booking\output;
 use coding_exception;
 use dml_exception;
 use mod_booking\booking_utils;
+use mod_booking\dates_handler;
 use mod_booking\optiondates_handler;
 use moodle_exception;
 use moodle_url;
@@ -60,6 +61,11 @@ class searchresults_student_view implements renderable, templatable {
     public $success = false;
 
     /**
+     * @var string $title
+     */
+    public $title = '';
+
+    /**
      * Constructor to prepare the data for the search results.
      * @param array $results An array containing the search results.
      * @param array $inactivecoursesids An array of courses to which the user is NOT enrolled.
@@ -87,7 +93,7 @@ class searchresults_student_view implements renderable, templatable {
             }
 
             // Prepare date strings.
-            $objectentry->datestrings = optiondates_handler::return_array_of_sessions_simple($objectentry->optionid);
+            $objectentry->datestrings = dates_handler::return_array_of_sessions_simple($objectentry->optionid);
 
             if (in_array($objectentry->courseid, $inactivecoursesids)) {
 
