@@ -1,3 +1,7 @@
+## Version 4.0.1 (2023081000)
+**Bugfixes:**
+* Bugfix: New namespace for dates_handler.
+
 ## Version 4.0.0 (2023071700)
 **Bugfixes:**
 * Bugfix: optiondates_handler of mod_booking was renamed to dates_handler - so fix the reference.
